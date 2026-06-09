@@ -13,211 +13,187 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root, [data-theme="dark"] {
-      --bg:       #0a0e14;
-      --surface:  #111827;
-      --surface2: #1a2333;
-      --border:   #1f2d3d;
-      --accent:   #00ff9d;
-      --red:      #ff4d6a;
-      --amber:    #f59e0b;
-      --purple:   #818cf8;
-      --muted:    #7c8a9e;
-      --text:     #e2e8f0;
-      --mono:     'JetBrains Mono', monospace;
-      --sans:     'Inter', sans-serif;
+      --bg:#0a0e14; --surface:#111827; --surface2:#1a2333; --border:#1f2d3d;
+      --accent:#00ff9d; --red:#ff4d6a; --amber:#f59e0b; --purple:#818cf8;
+      --muted:#7c8a9e; --text:#e2e8f0;
+      --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
     }
     [data-theme="light"] {
-      --bg:       #f4f6f9;
-      --surface:  #ffffff;
-      --surface2: #eef1f5;
-      --border:   #d1d9e0;
-      --accent:   #00a86b;
-      --red:      #dc2626;
-      --amber:    #d97706;
-      --purple:   #6366f1;
-      --muted:    #64748b;
-      --text:     #0f172a;
+      --bg:#f4f6f9; --surface:#ffffff; --surface2:#eef1f5; --border:#d1d9e0;
+      --accent:#00a86b; --red:#dc2626; --amber:#d97706; --purple:#6366f1;
+      --muted:#64748b; --text:#0f172a;
     }
+    html,body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; overflow-x:hidden; transition:background 0.2s,color 0.2s; }
 
-    html, body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; transition: background 0.2s, color 0.2s; }
+    header { border-bottom:1px solid var(--border); padding:13px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--bg); z-index:100; gap:12px; flex-wrap:wrap; transition:background 0.2s; }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:28px; height:28px; border:2px solid var(--accent); border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .logo-text { font-family:var(--mono); font-size:14px; font-weight:600; letter-spacing:0.08em; }
+    .logo-text span { color:var(--accent); }
+    .logo-version { font-family:var(--mono); font-size:10px; color:var(--muted); margin-left:6px; }
+    .header-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .nav-btn { font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:6px 14px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+    .nav-btn:hover,.nav-btn.active { border-color:var(--accent); color:var(--accent); }
+    .sync-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); display:inline-block; margin-right:4px; }
+    .sync-dot.on { background:var(--accent); }
+    .theme-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; padding:5px 10px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--muted); transition:all 0.15s; }
+    .theme-toggle:hover { border-color:var(--accent); color:var(--accent); }
+    .theme-toggle .ti { font-size:13px; line-height:1; }
+    .theme-toggle .tl { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; }
 
-    /* HEADER */
-    header { border-bottom: 1px solid var(--border); padding: 13px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; gap: 12px; flex-wrap: wrap; transition: background 0.2s, border-color 0.2s; }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 28px; height: 28px; border: 2px solid var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .logo-text { font-family: var(--mono); font-size: 14px; font-weight: 600; letter-spacing: 0.08em; }
-    .logo-text span { color: var(--accent); }
-    .logo-version { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-left: 6px; letter-spacing: 0.04em; }
-    .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    main { max-width:980px; margin:0 auto; padding:28px 24px 80px; }
 
-    .nav-btn { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-    .nav-btn:hover, .nav-btn.active { border-color: var(--accent); color: var(--accent); }
+    .market-tabs { display:flex; gap:2px; margin-bottom:24px; border-bottom:1px solid var(--border); }
+    .tab { font-family:var(--mono); font-size:11px; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; padding:9px 16px; border:none; background:transparent; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.15s,border-color 0.15s; position:relative; }
+    .tab:hover { color:var(--text); }
+    .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-badge { position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:var(--accent); display:none; }
+    .tab.has-data .tab-badge { display:block; }
 
-    .theme-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; }
-    .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
-    .theme-toggle .ti { font-size: 13px; line-height: 1; }
-    .theme-toggle .tl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .controls { display:flex; align-items:flex-end; gap:14px; margin-bottom:24px; flex-wrap:wrap; }
+    .field { display:flex; flex-direction:column; gap:5px; }
+    .field label { font-size:10px; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.06em; }
+    .field input[type="date"] { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:var(--mono); font-size:13px; padding:9px 12px; border-radius:5px; outline:none; cursor:pointer; transition:border-color 0.15s; }
+    .field input[type="date"]:focus { border-color:var(--accent); }
+    .run-btn { background:var(--accent); color:#0a0e14; border:none; font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; padding:10px 22px; border-radius:5px; cursor:pointer; transition:opacity 0.15s,transform 0.1s; }
+    .run-btn:hover { opacity:0.88; }
+    .run-btn:active { transform:scale(0.97); }
+    .run-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-    /* MAIN */
-    main { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
-
-    /* TABS */
-    .market-tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
-    .tab { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; padding: 9px 16px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    /* CONTROLS */
-    .controls { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
-    .field input[type="date"] { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 13px; padding: 9px 12px; border-radius: 5px; outline: none; cursor: pointer; transition: border-color 0.15s; }
-    .field input[type="date"]:focus { border-color: var(--accent); }
-    .run-btn { background: var(--accent); color: #0a0e14; border: none; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 10px 22px; border-radius: 5px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
-    .run-btn:hover { opacity: 0.88; }
-    .run-btn:active { transform: scale(0.97); }
-    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* STATUS */
-    .status-bar { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 16px; min-height: 18px; display: flex; align-items: center; gap: 7px; }
-    .status-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-    .status-bar.loading .dot { background: var(--accent); animation: pulse 1s infinite; }
-    .status-bar.error .dot { background: var(--red); }
-    .status-bar.ok .dot { background: var(--accent); }
+    .status-bar { font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:16px; min-height:18px; display:flex; align-items:center; gap:7px; }
+    .status-bar .dot { width:6px; height:6px; border-radius:50%; background:var(--muted); flex-shrink:0; }
+    .status-bar.loading .dot { background:var(--accent); animation:pulse 1s infinite; }
+    .status-bar.error .dot { background:var(--red); }
+    .status-bar.ok .dot { background:var(--accent); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
-    /* ERROR DETAIL */
-    .error-detail { background: var(--surface); border: 1px solid var(--red); border-radius: 5px; padding: 10px 14px; font-family: var(--mono); font-size: 11px; color: var(--red); margin-bottom: 16px; white-space: pre-wrap; word-break: break-all; display: none; }
+    .error-detail { background:var(--surface); border:1px solid var(--red); border-radius:5px; padding:10px 14px; font-family:var(--mono); font-size:11px; color:var(--red); margin-bottom:16px; white-space:pre-wrap; word-break:break-all; display:none; }
+    .retry-row { margin-bottom:16px; display:none; }
+    .retry-btn { background:transparent; border:1px solid var(--amber); color:var(--amber); font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:7px 14px; border-radius:4px; cursor:pointer; transition:background 0.15s; }
+    .retry-btn:hover { background:rgba(245,158,11,0.1); }
 
-    /* NOTICES */
-    .disclaimer { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 5px; padding: 10px 14px; font-size: 11px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
-    .disclaimer strong { color: var(--amber); font-family: var(--mono); }
-    .ngx-notice { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--purple); border-radius: 5px; padding: 9px 13px; font-size: 11px; color: var(--muted); margin-bottom: 16px; display: none; }
+    .disclaimer { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--amber); border-radius:5px; padding:10px 14px; font-size:11px; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+    .disclaimer strong { color:var(--amber); font-family:var(--mono); }
+    .ngx-notice { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--purple); border-radius:5px; padding:9px 13px; font-size:11px; color:var(--muted); margin-bottom:16px; display:none; }
 
-    /* SECTION HEADER */
-    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
-    .section-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-    .section-badge { font-family: var(--mono); font-size: 10px; color: var(--accent); }
+    .section-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px; }
+    .section-title { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); }
+    .section-badge { font-family:var(--mono); font-size:10px; color:var(--accent); }
 
-    /* TOP 10 TABLE */
-    .top10-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-family: var(--mono); }
-    .top10-table thead tr { border-bottom: 1px solid var(--border); }
-    .top10-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 7px 10px; text-align: left; font-weight: 500; }
-    .top10-table th.r { text-align: right; }
-    .top10-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-    .top10-table tbody tr:hover { background: var(--surface2); }
-    .top10-table tbody tr.rank1 { background: rgba(0,200,120,0.04); }
-    .top10-table tbody tr.rank1:hover { background: rgba(0,200,120,0.08); }
-    .top10-table td { padding: 11px 10px; font-size: 12px; }
-    .top10-table td.r { text-align: right; }
-    .rank-num { font-size: 10px; color: var(--muted); }
-    .rank1 .rank-num { color: var(--accent); }
-    .ticker { font-weight: 600; font-size: 13px; }
-    .rank1 .ticker { color: var(--accent); }
-    .co-name { font-size: 10px; color: var(--muted); display: block; margin-top: 1px; }
-    .gain { color: var(--accent); }
-    .loss { color: var(--red); }
-    .note-warn { font-size: 9px; color: var(--amber); display: block; margin-top: 2px; }
+    .top10-table { width:100%; border-collapse:collapse; margin-bottom:14px; font-family:var(--mono); }
+    .top10-table thead tr { border-bottom:1px solid var(--border); }
+    .top10-table th { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); padding:7px 10px; text-align:left; font-weight:500; }
+    .top10-table th.r { text-align:right; }
+    .top10-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
+    .top10-table tbody tr:hover { background:var(--surface2); }
+    .top10-table tbody tr.rank1 { background:rgba(0,200,120,0.04); }
+    .top10-table td { padding:11px 10px; font-size:12px; }
+    .top10-table td.r { text-align:right; }
+    .rank-num { font-size:10px; color:var(--muted); }
+    .rank1 .rank-num { color:var(--accent); }
+    .ticker { font-weight:600; font-size:13px; }
+    .rank1 .ticker { color:var(--accent); }
+    .co-name { font-size:10px; color:var(--muted); display:block; margin-top:1px; }
+    .gain { color:var(--accent); }
+    .loss { color:var(--red); }
+    .note-warn { font-size:9px; color:var(--amber); display:block; margin-top:2px; }
 
-    /* FOLLOWON */
-    .followon-btn-row { margin-bottom: 32px; }
-    .followon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
-    .followon-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .followon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .followon-section { margin-bottom: 40px; }
-    .followon-stock { margin-bottom: 22px; }
-    .followon-stock-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-    .followon-ticker { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); }
-    .followon-name { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-    .followon-base { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-left: auto; }
-    .day-grid { display: flex; gap: 6px; flex-wrap: wrap; }
-    .day-card { flex: 0 0 68px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 7px 5px; text-align: center; }
-    .day-card .dl { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 3px; }
-    .day-card .dp { font-family: var(--mono); font-size: 12px; font-weight: 600; }
-    .day-card .dpr { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-    .day-card .dest { font-size: 8px; color: var(--amber); margin-top: 2px; }
-    .day-card.pos { border-color: rgba(0,200,120,0.3); }
-    .day-card.neg { border-color: rgba(255,77,106,0.25); }
-    .day-unavail { font-family: var(--mono); font-size: 11px; color: var(--muted); font-style: italic; padding: 8px 0; }
+    .followon-btn-row { margin-bottom:32px; }
+    .followon-btn { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.07em; padding:10px 20px; border-radius:5px; cursor:pointer; transition:border-color 0.15s,color 0.15s; }
+    .followon-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .followon-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .followon-section { margin-bottom:40px; }
+    .followon-stock { margin-bottom:22px; }
+    .followon-stock-header { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+    .followon-ticker { font-family:var(--mono); font-size:12px; font-weight:600; color:var(--accent); }
+    .followon-name { font-family:var(--mono); font-size:10px; color:var(--muted); }
+    .followon-base { font-family:var(--mono); font-size:10px; color:var(--muted); margin-left:auto; }
+    .day-grid { display:flex; gap:6px; flex-wrap:wrap; }
+    .day-card { flex:0 0 68px; background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:7px 5px; text-align:center; }
+    .day-card .dl { font-family:var(--mono); font-size:9px; color:var(--muted); margin-bottom:3px; }
+    .day-card .dp { font-family:var(--mono); font-size:12px; font-weight:600; }
+    .day-card .dpr { font-family:var(--mono); font-size:9px; color:var(--muted); margin-top:2px; }
+    .day-card .dest { font-size:8px; color:var(--amber); margin-top:2px; }
+    .day-card.pos { border-color:rgba(0,200,120,0.3); }
+    .day-card.neg { border-color:rgba(255,77,106,0.25); }
+    .day-unavail { font-family:var(--mono); font-size:11px; color:var(--muted); font-style:italic; padding:8px 0; }
 
-    /* EMPTY / SKELETON */
-    .empty-state { text-align: center; padding: 70px 20px; border: 1px dashed var(--border); border-radius: 8px; }
-    .empty-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 10px; }
-    .empty-state p { font-size: 13px; color: var(--muted); line-height: 1.7; }
-    .skel-row { display: flex; gap: 14px; padding: 12px 10px; border-bottom: 1px solid var(--border); align-items: center; }
-    .skel { background: var(--surface2); border-radius: 3px; animation: shimmer 1.3s infinite; }
+    .empty-state { text-align:center; padding:70px 20px; border:1px dashed var(--border); border-radius:8px; }
+    .empty-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:10px; }
+    .empty-state p { font-size:13px; color:var(--muted); line-height:1.7; }
+    .skel-row { display:flex; gap:14px; padding:12px 10px; border-bottom:1px solid var(--border); align-items:center; }
+    .skel { background:var(--surface2); border-radius:3px; animation:shimmer 1.3s infinite; }
     @keyframes shimmer { 0%,100%{opacity:0.45} 50%{opacity:0.9} }
 
-    /* USAGE */
-    .usage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
-    .usage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
-    .usage-card .uc-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
-    .usage-card .uc-val { font-family: var(--mono); font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
-    .usage-card .uc-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
-    .usage-card .uc-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
-    .usage-card .uc-bar { height: 100%; border-radius: 2px; transition: width 0.4s; }
-    .usage-log { font-family: var(--mono); }
-    .usage-log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .usage-log-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-    .clear-btn { font-size: 10px; color: var(--red); background: none; border: 1px solid var(--red); border-radius: 3px; padding: 3px 8px; cursor: pointer; font-family: var(--mono); opacity: 0.7; transition: opacity 0.15s; }
-    .clear-btn:hover { opacity: 1; }
-    .log-table { width: 100%; border-collapse: collapse; }
-    .log-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
-    .log-table td { font-size: 11px; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
-    .log-table td.r { text-align: right; }
-    .log-empty { font-size: 12px; color: var(--muted); padding: 20px 0; text-align: center; }
+    .usage-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
+    .usage-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:16px 18px; }
+    .usage-card .uc-label { font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:8px; }
+    .usage-card .uc-val { font-family:var(--mono); font-size:26px; font-weight:600; color:var(--text); line-height:1; }
+    .usage-card .uc-sub { font-family:var(--mono); font-size:10px; color:var(--muted); margin-top:4px; }
+    .usage-card .uc-bar-wrap { height:4px; background:var(--border); border-radius:2px; margin-top:10px; overflow:hidden; }
+    .usage-card .uc-bar { height:100%; border-radius:2px; transition:width 0.4s; }
+    .usage-log { font-family:var(--mono); }
+    .usage-log-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .usage-log-title { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); }
+    .clear-btn { font-size:10px; color:var(--red); background:none; border:1px solid var(--red); border-radius:3px; padding:3px 8px; cursor:pointer; font-family:var(--mono); opacity:0.7; transition:opacity 0.15s; }
+    .clear-btn:hover { opacity:1; }
+    .log-table { width:100%; border-collapse:collapse; }
+    .log-table th { font-size:9px; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); padding:6px 10px; text-align:left; border-bottom:1px solid var(--border); font-weight:500; }
+    .log-table td { font-size:11px; padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text); }
+    .log-table td.r { text-align:right; }
+    .log-empty { font-size:12px; color:var(--muted); padding:20px 0; text-align:center; }
 
-    /* SETTINGS */
-    .settings-section { margin-bottom: 32px; }
-    .settings-section-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-    .settings-row:last-child { border-bottom: none; }
-    .settings-label { font-size: 13px; color: var(--text); font-weight: 500; }
-    .settings-desc { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
-    .settings-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+    .settings-section { margin-bottom:32px; }
+    .settings-section-title { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .settings-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+    .settings-row:last-child { border-bottom:none; }
+    .settings-label { font-size:13px; color:var(--text); font-weight:500; }
+    .settings-desc { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.5; }
+    .settings-right { display:flex; align-items:center; gap:10px; flex-shrink:0; flex-wrap:wrap; }
+    .settings-key-input { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:var(--mono); font-size:12px; padding:9px 12px; border-radius:5px; width:260px; outline:none; transition:border-color 0.15s; }
+    .settings-key-input:focus { border-color:var(--accent); }
+    .settings-url-input { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:var(--mono); font-size:11px; padding:9px 12px; border-radius:5px; width:320px; outline:none; transition:border-color 0.15s; }
+    .settings-url-input:focus { border-color:var(--accent); }
+    .save-key-btn { background:var(--accent); color:#0a0e14; border:none; font-family:var(--mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; padding:9px 16px; border-radius:5px; cursor:pointer; transition:opacity 0.15s; white-space:nowrap; }
+    .save-key-btn:hover { opacity:0.85; }
+    .key-status { font-family:var(--mono); font-size:11px; display:flex; align-items:center; gap:6px; }
+    .key-status .ks-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .key-status.saved .ks-dot { background:var(--accent); }
+    .key-status.none .ks-dot { background:var(--muted); }
+    .key-status.saved .ks-text { color:var(--accent); }
+    .key-status.none .ks-text { color:var(--muted); }
 
-    .settings-key-input { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 12px; padding: 9px 12px; border-radius: 5px; width: 260px; outline: none; transition: border-color 0.15s; }
-    .settings-key-input:focus { border-color: var(--accent); }
+    .toggle-switch { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+    .toggle-track { position:absolute; inset:0; background:var(--border); border-radius:12px; cursor:pointer; transition:background 0.2s; }
+    .toggle-track::after { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:var(--muted); border-radius:50%; transition:transform 0.2s,background 0.2s; }
+    .toggle-switch input:checked + .toggle-track { background:rgba(0,200,120,0.25); }
+    .toggle-switch input:checked + .toggle-track::after { transform:translateX(20px); background:var(--accent); }
 
-    .save-key-btn { background: var(--accent); color: #0a0e14; border: none; font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 9px 16px; border-radius: 5px; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
-    .save-key-btn:hover { opacity: 0.85; }
+    .danger-btn { background:transparent; border:1px solid var(--red); color:var(--red); font-family:var(--mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; padding:9px 16px; border-radius:5px; cursor:pointer; transition:background 0.15s,color 0.15s; white-space:nowrap; }
+    .danger-btn:hover { background:var(--red); color:#fff; }
 
-    .key-status { font-family: var(--mono); font-size: 11px; display: flex; align-items: center; gap: 6px; }
-    .key-status .ks-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .key-status.saved .ks-dot { background: var(--accent); }
-    .key-status.none .ks-dot { background: var(--muted); }
-    .key-status.saved .ks-text { color: var(--accent); }
-    .key-status.none .ks-text { color: var(--muted); }
+    .firebase-steps { background:var(--surface2); border:1px solid var(--border); border-radius:5px; padding:14px 16px; margin-top:10px; font-size:11px; color:var(--muted); line-height:1.8; }
+    .firebase-steps strong { color:var(--text); font-family:var(--mono); }
+    .firebase-steps a { color:var(--accent); }
+    .firebase-steps code { background:var(--bg); padding:1px 5px; border-radius:3px; font-family:var(--mono); font-size:10px; color:var(--text); }
 
-    /* TOGGLE SWITCH */
-    .toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-    .toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-    .toggle-track::after { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: var(--muted); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
-    .toggle-switch input:checked + .toggle-track { background: rgba(0,200,120,0.25); }
-    .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); background: var(--accent); }
+    .sync-status-bar { font-family:var(--mono); font-size:11px; color:var(--muted); padding:8px 0; display:flex; align-items:center; gap:7px; }
 
-    /* DANGER ZONE */
-    .danger-btn { background: transparent; border: 1px solid var(--red); color: var(--red); font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 9px 16px; border-radius: 5px; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; }
-    .danger-btn:hover { background: var(--red); color: #fff; }
+    .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface); border:1px solid var(--accent); color:var(--accent); font-family:var(--mono); font-size:12px; padding:10px 20px; border-radius:6px; opacity:0; transition:opacity 0.25s,transform 0.25s; z-index:999; pointer-events:none; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.error-toast { border-color:var(--red); color:var(--red); }
 
-    /* TOAST */
-    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--accent); color: var(--accent); font-family: var(--mono); font-size: 12px; padding: 10px 20px; border-radius: 6px; opacity: 0; transition: opacity 0.25s, transform 0.25s; z-index: 999; pointer-events: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.error-toast { border-color: var(--red); color: var(--red); }
-    .toast .t-icon { font-size: 14px; }
-
-    @media (max-width: 600px) {
-      header { padding: 12px 14px; }
-      main { padding: 18px 12px 60px; }
-      .co-name { display: none; }
-      .day-card { flex: 0 0 60px; }
-      .usage-grid { grid-template-columns: 1fr 1fr; }
-      .settings-key-input { width: 100%; }
-      .settings-row { flex-direction: column; align-items: flex-start; }
-      .settings-right { width: 100%; }
+    @media (max-width:600px) {
+      header { padding:12px 14px; }
+      main { padding:18px 12px 60px; }
+      .co-name { display:none; }
+      .day-card { flex:0 0 60px; }
+      .usage-grid { grid-template-columns:1fr 1fr; }
+      .settings-key-input,.settings-url-input { width:100%; }
+      .settings-row { flex-direction:column; align-items:flex-start; }
+      .settings-right { width:100%; }
     }
   </style>
 </head>
@@ -232,13 +208,13 @@
       </svg>
     </div>
     <span class="logo-text">MOMENTUM<span>SCOUT</span></span>
-    <span class="logo-version">v1.3.0</span>
+    <span class="logo-version">v1.4.0</span>
   </div>
   <div class="header-right">
     <button class="nav-btn active" id="navScout"    onclick="showView('scout')">Scout</button>
     <button class="nav-btn"        id="navUsage"    onclick="showView('usage')">Usage</button>
     <button class="nav-btn"        id="navSettings" onclick="showView('settings')">Settings</button>
-    <button class="theme-toggle"   id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+    <button class="theme-toggle"   id="themeToggle" onclick="toggleTheme()">
       <span class="ti" id="themeIcon">☀️</span>
       <span class="tl" id="themeLabel">Light</span>
     </button>
@@ -246,13 +222,12 @@
 </header>
 
 <main>
-
   <!-- SCOUT VIEW -->
   <div id="scoutPanel">
     <div class="market-tabs">
-      <button class="tab active" data-market="us_large">US Large Cap</button>
-      <button class="tab" data-market="us_small">US Small Cap</button>
-      <button class="tab" data-market="ngx">NGX Nigeria</button>
+      <button class="tab active" data-market="us_large">US Large Cap<span class="tab-badge"></span></button>
+      <button class="tab"        data-market="us_small">US Small Cap<span class="tab-badge"></span></button>
+      <button class="tab"        data-market="ngx">NGX Nigeria<span class="tab-badge"></span></button>
     </div>
     <div class="controls">
       <div class="field">
@@ -261,23 +236,17 @@
       </div>
       <button class="run-btn" id="runBtn">Run Scout</button>
     </div>
-    <div class="status-bar" id="statusBar">
-      <span class="dot"></span>
-      <span id="statusText">Enter a date and run the scout.</span>
-    </div>
+    <div class="status-bar" id="statusBar"><span class="dot"></span><span id="statusText">Enter a date and run the scout.</span></div>
     <div class="error-detail" id="errorDetail"></div>
+    <div class="retry-row" id="retryRow">
+      <button class="retry-btn" onclick="retryLast()">↺ Retry</button>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:10px;" id="retryHint"></span>
+    </div>
     <div class="disclaimer">
-      <strong>Notice</strong> — Results are drawn from Gemini's training data, not live web search. Data for recent dates (post mid-2025) may be estimated or incomplete — check the ⚠ flags on each row. Always verify against primary exchange data before any investment decision. Past momentum does not guarantee future performance.
+      <strong>Notice</strong> — Results are drawn from Gemini's training data, not live web search. Data for recent dates (post mid-2025) may be estimated — check the ⚠ flags. Always verify before any investment decision.
     </div>
-    <div class="ngx-notice" id="ngxNotice">
-      NGX data availability varies. Results may be incomplete for older dates or less-liquid securities.
-    </div>
-    <div id="resultsArea">
-      <div class="empty-state">
-        <div class="empty-label">Awaiting input</div>
-        <p>Select a market, pick a date,<br/>then run the scout to see the top 10 movers.</p>
-      </div>
-    </div>
+    <div class="ngx-notice" id="ngxNotice">NGX data availability varies. Results may be incomplete for older dates or less-liquid securities.</div>
+    <div id="resultsArea"><div class="empty-state"><div class="empty-label">Awaiting input</div><p>Select a market, pick a date,<br/>then run the scout to see the top 10 movers.</p></div></div>
     <div class="followon-btn-row" id="followonBtnRow" style="display:none;">
       <button class="followon-btn" id="followonBtn" onclick="loadAllFollowon()">Load 10-day follow-on for all stocks</button>
     </div>
@@ -291,51 +260,15 @@
       <span class="section-badge" id="usageResetNote"></span>
     </div>
     <div class="usage-grid">
-      <div class="usage-card">
-        <div class="uc-label">Calls Today</div>
-        <div class="uc-val" id="uCallsToday">0</div>
-        <div class="uc-sub">of 1,500 daily limit</div>
-        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarDay" style="width:0%;background:var(--accent)"></div></div>
-      </div>
-      <div class="usage-card">
-        <div class="uc-label">Search Queries Today</div>
-        <div class="uc-val" id="uSearchToday">0</div>
-        <div class="uc-sub">est. ~3–5 per session</div>
-        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarSearch" style="width:0%;background:var(--purple)"></div></div>
-      </div>
-      <div class="usage-card">
-        <div class="uc-label">Calls This Month</div>
-        <div class="uc-val" id="uCallsMonth">0</div>
-        <div class="uc-sub">of ~45,000 monthly est.</div>
-        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarMonth" style="width:0%;background:var(--amber)"></div></div>
-      </div>
-      <div class="usage-card">
-        <div class="uc-label">Search Queries Month</div>
-        <div class="uc-val" id="uSearchMonth">0</div>
-        <div class="uc-sub">of 5,000 free/month</div>
-        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarSearchMonth" style="width:0%;background:var(--red)"></div></div>
-      </div>
-      <div class="usage-card">
-        <div class="uc-label">Sessions Total</div>
-        <div class="uc-val" id="uSessions">0</div>
-        <div class="uc-sub">scout + follow-on runs</div>
-      </div>
-      <div class="usage-card">
-        <div class="uc-label">Remaining Today</div>
-        <div class="uc-val" id="uRemaining">1,500</div>
-        <div class="uc-sub">API calls available</div>
-      </div>
+      <div class="usage-card"><div class="uc-label">Calls Today</div><div class="uc-val" id="uCallsToday">0</div><div class="uc-sub">of 1,500 daily limit</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarDay" style="width:0%;background:var(--accent)"></div></div></div>
+      <div class="usage-card"><div class="uc-label">Calls This Month</div><div class="uc-val" id="uCallsMonth">0</div><div class="uc-sub">of ~45,000 monthly est.</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarMonth" style="width:0%;background:var(--amber)"></div></div></div>
+      <div class="usage-card"><div class="uc-label">Sessions Total</div><div class="uc-val" id="uSessions">0</div><div class="uc-sub">scout + follow-on runs</div></div>
+      <div class="usage-card"><div class="uc-label">Remaining Today</div><div class="uc-val" id="uRemaining">1,500</div><div class="uc-sub">API calls available</div></div>
     </div>
     <div class="usage-log">
-      <div class="usage-log-header">
-        <span class="usage-log-title">Session Log</span>
-        <button class="clear-btn" onclick="clearUsage()">Clear log</button>
-      </div>
+      <div class="usage-log-header"><span class="usage-log-title">Session Log</span><button class="clear-btn" onclick="clearUsage()">Clear log</button></div>
       <table class="log-table">
-        <thead><tr>
-          <th>Date / Time</th><th>Market</th><th>Query Date</th>
-          <th>Type</th><th class="r">API Calls</th><th class="r">Est. Searches</th>
-        </tr></thead>
+        <thead><tr><th>Date / Time</th><th>Market</th><th>Query Date</th><th>Type</th><th class="r">Calls</th></tr></thead>
         <tbody id="logBody"></tbody>
       </table>
       <div id="logEmpty" class="log-empty">No sessions recorded yet.</div>
@@ -345,107 +278,106 @@
   <!-- SETTINGS VIEW -->
   <div id="settingsPanel" style="display:none;">
     <div class="section-header" style="margin-bottom:24px;">
-      <span class="section-title">Settings</span>
-      <span class="section-badge">v1.3.0</span>
+      <span class="section-title">Settings</span><span class="section-badge">v1.4.0</span>
     </div>
 
-    <!-- API KEY -->
     <div class="settings-section">
       <div class="settings-section-title">API Configuration</div>
       <div class="settings-row">
-        <div>
-          <div class="settings-label">Gemini API Key</div>
-          <div class="settings-desc">Your Google AI Studio key. Saved locally in this browser only — never sent anywhere except Google's Gemini API.</div>
-        </div>
+        <div><div class="settings-label">Gemini API Key</div><div class="settings-desc">Your Google AI Studio key. Saved in this browser only.</div></div>
         <div class="settings-right" style="flex-direction:column;align-items:flex-end;gap:8px;">
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <input type="password" class="settings-key-input" id="settingsKeyInput" placeholder="Paste your Gemini API key…" autocomplete="off" />
             <button class="save-key-btn" onclick="saveApiKey()">Save key</button>
           </div>
-          <div class="key-status none" id="keyStatus">
-            <span class="ks-dot"></span>
-            <span class="ks-text" id="keyStatusText">No key saved</span>
+          <div class="key-status none" id="keyStatus"><span class="ks-dot"></span><span class="ks-text" id="keyStatusText">No key saved</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Cross-Device Sync (Firebase)</div>
+      <div class="settings-row">
+        <div style="flex:1;">
+          <div class="settings-label">Firebase Database URL</div>
+          <div class="settings-desc">Saves scout results to Firebase so you can see them on any device without re-running.<br/>
+          <span id="syncStatusLine" class="sync-status-bar" style="margin-top:6px;"><span class="sync-dot" id="syncDot"></span><span id="syncStatusText">Not configured</span></span></div>
+          <div class="firebase-steps" id="firebaseSteps">
+            <strong>One-time setup (2 min):</strong><br/>
+            1. Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br/>
+            2. Click <strong>Add project</strong> → name it (e.g. <code>momentum-scout</code>) → Continue<br/>
+            3. In the left sidebar click <strong>Build → Realtime Database</strong><br/>
+            4. Click <strong>Create Database</strong> → choose a region → Start in <strong>test mode</strong><br/>
+            5. Copy the database URL shown (looks like <code>https://your-app.firebaseio.com</code>)<br/>
+            6. Paste it below and click Save
           </div>
         </div>
       </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Database URL</div><div class="settings-desc">Paste your Firebase Realtime Database URL here.</div></div>
+        <div class="settings-right" style="flex-direction:column;align-items:flex-end;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="text" class="settings-url-input" id="firebaseUrlInput" placeholder="https://your-app-default-rtdb.firebaseio.com" autocomplete="off" />
+            <button class="save-key-btn" onclick="saveFirebaseUrl()">Save URL</button>
+          </div>
+          <div class="key-status none" id="fbUrlStatus"><span class="ks-dot"></span><span class="ks-text" id="fbUrlStatusText">No URL saved</span></div>
+        </div>
+      </div>
     </div>
 
-    <!-- APPEARANCE -->
     <div class="settings-section">
       <div class="settings-section-title">Appearance</div>
       <div class="settings-row">
-        <div>
-          <div class="settings-label">Dark Mode</div>
-          <div class="settings-desc">Switch between dark terminal and light professional themes. Preference is saved across sessions.</div>
-        </div>
+        <div><div class="settings-label">Dark Mode</div><div class="settings-desc">Switch between dark and light themes. Saved across sessions.</div></div>
         <div class="settings-right">
-          <label class="toggle-switch">
-            <input type="checkbox" id="darkModeToggle" onchange="onDarkToggle(this)" />
-            <span class="toggle-track"></span>
-          </label>
+          <label class="toggle-switch"><input type="checkbox" id="darkModeToggle" onchange="onDarkToggle(this)" /><span class="toggle-track"></span></label>
         </div>
       </div>
     </div>
 
-    <!-- APP MANAGEMENT -->
     <div class="settings-section">
       <div class="settings-section-title">App Management</div>
       <div class="settings-row">
-        <div>
-          <div class="settings-label">Hard Refresh</div>
-          <div class="settings-desc">Clears the service worker cache and reloads the app. Use this if the app behaves unexpectedly after an update.</div>
-        </div>
-        <div class="settings-right">
-          <button class="danger-btn" onclick="hardRefresh()">Hard Refresh</button>
-        </div>
+        <div><div class="settings-label">Hard Refresh</div><div class="settings-desc">Clears the service worker cache and reloads. Use after updates if the app behaves unexpectedly.</div></div>
+        <div class="settings-right"><button class="danger-btn" onclick="hardRefresh()">Hard Refresh</button></div>
       </div>
       <div class="settings-row">
-        <div>
-          <div class="settings-label">Clear Saved Key</div>
-          <div class="settings-desc">Remove the stored API key from this browser.</div>
-        </div>
-        <div class="settings-right">
-          <button class="danger-btn" onclick="clearApiKey()">Clear Key</button>
-        </div>
+        <div><div class="settings-label">Clear Saved Key</div><div class="settings-desc">Remove the stored Gemini API key from this browser.</div></div>
+        <div class="settings-right"><button class="danger-btn" onclick="clearApiKey()">Clear Key</button></div>
       </div>
     </div>
 
-    <!-- ABOUT -->
     <div class="settings-section">
       <div class="settings-section-title">About</div>
       <div class="settings-row">
         <div>
-          <div class="settings-label">Momentum Scout <span style="color:var(--muted);font-size:11px;">v1.3.0</span></div>
-          <div class="settings-desc">Powered by Gemini 2.5 Flash using training data. Live Google Search grounding is not used (browser CORS limitation). Data for dates before mid-2025 is most reliable.<br/>Free tier: 1,500 API calls/day.</div>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Data Storage</div>
-          <div class="settings-desc">API key and preferences are stored in your browser's localStorage. Usage logs are stored locally. No data is sent to any server other than Google's Gemini API.</div>
+          <div class="settings-label">Momentum Scout <span style="color:var(--muted);font-size:11px;">v1.4.0</span></div>
+          <div class="settings-desc">Powered by Gemini 2.5 Flash. Live Google Search grounding disabled (browser CORS limitation) — results use Gemini training data. Dates before mid-2025 are most reliable.<br/>Free tier: 1,500 API calls/day.</div>
         </div>
       </div>
     </div>
   </div>
-
 </main>
 
-<div class="toast" id="toast">
-  <span class="t-icon" id="toastIcon">✓</span>
-  <span id="toastMsg"></span>
-</div>
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
 
 <script>
-const APP_VERSION   = 'v1.3.0';
-const GEMINI_MODEL  = 'gemini-2.5-flash';
-const GEMINI_URL    = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-const DAILY_LIMIT   = 1500;
-const MONTHLY_SEARCH = 5000;
-const MONTHLY_CALLS  = 45000;
+const APP_VERSION  = 'v1.4.0';
+const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_URL   = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const DAILY_LIMIT  = 1500;
+const MONTHLY_CALLS = 45000;
+const MAX_RETRIES  = 2;
 
-let currentMarket  = 'us_large';
-let currentResults = [];
-let currentDate    = '';
+// Per-tab state: results, follow-on data, date, status
+const tabState = {
+  us_large: { results:null, followon:null, date:null },
+  us_small: { results:null, followon:null, date:null },
+  ngx:      { results:null, followon:null, date:null }
+};
+
+let currentMarket = 'us_large';
+let lastAction = null; // for retry
 
 const marketLabels = {
   us_large: 'S&P 500 / US Large Cap',
@@ -457,90 +389,134 @@ const marketLabels = {
 (function init() {
   applyTheme(localStorage.getItem('ms_theme') || 'dark');
   refreshKeyStatus();
+  refreshFbStatus();
   const d = new Date();
   d.setDate(d.getDate() - 1);
   if (d.getDay() === 0) d.setDate(d.getDate() - 2);
   if (d.getDay() === 6) d.setDate(d.getDate() - 1);
   document.getElementById('dateInput').value = d.toISOString().slice(0, 10);
+  loadFromFirebase(); // attempt to load saved data on startup
 })();
 
 // ── THEME ──────────────────────────────────────────────────────────────────
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  const dark = theme === 'dark';
-  const icon  = document.getElementById('themeIcon');
-  const label = document.getElementById('themeLabel');
-  const tog   = document.getElementById('darkModeToggle');
-  if (icon)  icon.textContent  = dark ? '☀️' : '🌙';
-  if (label) label.textContent = dark ? 'Light' : 'Dark';
-  if (tog)   tog.checked       = dark;
-  localStorage.setItem('ms_theme', theme);
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const d = t === 'dark';
+  const i = document.getElementById('themeIcon'), l = document.getElementById('themeLabel'), g = document.getElementById('darkModeToggle');
+  if (i) i.textContent  = d ? '☀️' : '🌙';
+  if (l) l.textContent  = d ? 'Light' : 'Dark';
+  if (g) g.checked      = d;
+  localStorage.setItem('ms_theme', t);
 }
-function toggleTheme() {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
+function toggleTheme() { applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 function onDarkToggle(el) { applyTheme(el.checked ? 'dark' : 'light'); }
 
 // ── API KEY ────────────────────────────────────────────────────────────────
 function getSavedKey() { return localStorage.getItem('ms_apikey') || ''; }
-
 function saveApiKey() {
-  const val = document.getElementById('settingsKeyInput').value.trim();
-  if (!val) { showToast('Enter a key first.', true); return; }
-  if (val.length < 20) { showToast('Key looks too short — check and try again.', true); return; }
-  localStorage.setItem('ms_apikey', val);
+  const v = document.getElementById('settingsKeyInput').value.trim();
+  if (!v) { showToast('Enter a key first.', true); return; }
+  if (v.length < 20) { showToast('Key looks too short.', true); return; }
+  localStorage.setItem('ms_apikey', v);
   document.getElementById('settingsKeyInput').value = '';
-  refreshKeyStatus();
-  showToast('API key saved ✓');
+  refreshKeyStatus(); showToast('API key saved ✓');
 }
-
 function clearApiKey() {
   if (!confirm('Remove the saved API key?')) return;
-  localStorage.removeItem('ms_apikey');
-  refreshKeyStatus();
-  showToast('API key removed.');
+  localStorage.removeItem('ms_apikey'); refreshKeyStatus(); showToast('Key removed.');
+}
+function refreshKeyStatus() {
+  const k = getSavedKey(), s = document.getElementById('keyStatus'), t = document.getElementById('keyStatusText'), i = document.getElementById('settingsKeyInput');
+  if (!s) return;
+  if (k) { s.className='key-status saved'; t.textContent='Key saved · '+k.slice(0,8)+'••••••••'; if(i) i.placeholder='Enter new key to replace…'; }
+  else   { s.className='key-status none';  t.textContent='No key saved'; if(i) i.placeholder='Paste your Gemini API key…'; }
 }
 
-function refreshKeyStatus() {
-  const key    = getSavedKey();
-  const status = document.getElementById('keyStatus');
-  const text   = document.getElementById('keyStatusText');
-  const input  = document.getElementById('settingsKeyInput');
-  if (!status) return;
-  if (key) {
-    status.className    = 'key-status saved';
-    text.textContent    = 'Key saved · ' + key.slice(0, 8) + '••••••••';
-    if (input) input.placeholder = 'Enter new key to replace…';
+// ── FIREBASE ───────────────────────────────────────────────────────────────
+function getFirebaseUrl() { return (localStorage.getItem('ms_fburl') || '').replace(/\/$/, ''); }
+function saveFirebaseUrl() {
+  const v = document.getElementById('firebaseUrlInput').value.trim().replace(/\/$/, '');
+  if (!v) { showToast('Enter a URL first.', true); return; }
+  if (!v.startsWith('https://')) { showToast('URL must start with https://', true); return; }
+  localStorage.setItem('ms_fburl', v);
+  document.getElementById('firebaseUrlInput').value = '';
+  refreshFbStatus(); showToast('Firebase URL saved ✓');
+  loadFromFirebase();
+}
+function refreshFbStatus() {
+  const url = getFirebaseUrl();
+  const dot = document.getElementById('syncDot'), txt = document.getElementById('syncStatusText');
+  const s   = document.getElementById('fbUrlStatus'), st = document.getElementById('fbUrlStatusText');
+  const inp = document.getElementById('firebaseUrlInput');
+  const steps = document.getElementById('firebaseSteps');
+  if (url) {
+    if (dot) { dot.className='sync-dot on'; txt.textContent='Sync configured'; }
+    if (s)   { s.className='key-status saved'; st.textContent='URL saved · '+url.slice(8,28)+'…'; }
+    if (inp) inp.placeholder='Enter new URL to replace…';
+    if (steps) steps.style.display = 'none';
   } else {
-    status.className    = 'key-status none';
-    text.textContent    = 'No key saved';
-    if (input) input.placeholder = 'Paste API key…';
+    if (dot) { dot.className='sync-dot'; txt.textContent='Not configured — see setup steps below'; }
+    if (s)   { s.className='key-status none'; st.textContent='No URL saved'; }
+    if (inp) inp.placeholder='https://your-app-default-rtdb.firebaseio.com';
+    if (steps) steps.style.display = 'block';
   }
 }
 
-// ── HARD REFRESH ───────────────────────────────────────────────────────────
-async function hardRefresh() {
-  showToast('Clearing cache…');
+async function saveToFirebase() {
+  const url = getFirebaseUrl(); if (!url) return;
   try {
-    if ('serviceWorker' in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r => r.unregister()));
+    const payload = {};
+    for (const [mkt, state] of Object.entries(tabState)) {
+      if (state.results) payload[mkt] = { results: state.results, followon: state.followon, date: state.date, ts: Date.now() };
     }
-    const keys = await caches.keys();
-    await Promise.all(keys.map(k => caches.delete(k)));
-  } catch (e) { /* ignore */ }
-  setTimeout(() => window.location.reload(true), 600);
+    await fetch(`${url}/ms_data.json`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    showSyncStatus('Synced ✓', true);
+  } catch(e) { showSyncStatus('Sync failed', false); }
+}
+
+async function loadFromFirebase() {
+  const url = getFirebaseUrl(); if (!url) return;
+  try {
+    showSyncStatus('Loading from cloud…', null);
+    const res = await fetch(`${url}/ms_data.json`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data) { showSyncStatus('No cloud data yet', false); return; }
+    let loaded = 0;
+    for (const [mkt, state] of Object.entries(data)) {
+      if (tabState[mkt] && state.results) {
+        tabState[mkt].results  = state.results;
+        tabState[mkt].followon = state.followon || null;
+        tabState[mkt].date     = state.date || null;
+        markTabHasData(mkt, true);
+        loaded++;
+      }
+    }
+    if (loaded > 0) {
+      showSyncStatus(`Loaded ${loaded} market(s) from cloud ✓`, true);
+      renderCurrentTab(); // render whatever tab is active if it has data
+    } else {
+      showSyncStatus('No cloud data yet', false);
+    }
+  } catch(e) { showSyncStatus('Could not reach Firebase', false); }
+}
+
+function showSyncStatus(msg, ok) {
+  const dot = document.getElementById('syncDot'), txt = document.getElementById('syncStatusText');
+  if (!dot || !txt) return;
+  dot.className = 'sync-dot' + (ok === true ? ' on' : '');
+  txt.textContent = msg;
 }
 
 // ── VIEWS ──────────────────────────────────────────────────────────────────
 function showView(v) {
   ['scout','usage','settings'].forEach(id => {
-    document.getElementById(id + 'Panel').style.display = v === id ? '' : 'none';
-    const btn = document.getElementById('nav' + id.charAt(0).toUpperCase() + id.slice(1));
-    if (btn) btn.classList.toggle('active', v === id);
+    document.getElementById(id+'Panel').style.display = v===id ? '' : 'none';
+    const b = document.getElementById('nav'+id.charAt(0).toUpperCase()+id.slice(1));
+    if (b) b.classList.toggle('active', v===id);
   });
-  if (v === 'usage')    renderUsage();
-  if (v === 'settings') refreshKeyStatus();
+  if (v==='usage')    renderUsage();
+  if (v==='settings') { refreshKeyStatus(); refreshFbStatus(); }
 }
 
 // ── MARKET TABS ────────────────────────────────────────────────────────────
@@ -549,68 +525,122 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     currentMarket = tab.dataset.market;
-    document.getElementById('ngxNotice').style.display = currentMarket === 'ngx' ? 'block' : 'none';
+    document.getElementById('ngxNotice').style.display = currentMarket==='ngx' ? 'block' : 'none';
+    document.getElementById('errorDetail').style.display = 'none';
+    document.getElementById('retryRow').style.display = 'none';
+    renderCurrentTab();
   });
 });
+
+function markTabHasData(market, has) {
+  const tab = document.querySelector(`.tab[data-market="${market}"]`);
+  if (tab) tab.classList.toggle('has-data', has);
+}
+
+function renderCurrentTab() {
+  const state = tabState[currentMarket];
+  if (state.results) {
+    renderTop10(state.results, state.date);
+    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${state.date}`);
+    if (state.results.length > 0) {
+      document.getElementById('followonBtnRow').style.display = 'block';
+      const btn = document.getElementById('followonBtn');
+      if (state.followon) { btn.textContent='Follow-on loaded'; btn.disabled=true; renderAllFollowon(state.followon, state.results); }
+      else { btn.textContent='Load 10-day follow-on for all stocks'; btn.disabled=false; document.getElementById('followonArea').innerHTML=''; }
+    }
+  } else {
+    document.getElementById('resultsArea').innerHTML = `<div class="empty-state"><div class="empty-label">No data</div><p>No results for this market yet.<br/>Pick a date and run the scout.</p></div>`;
+    document.getElementById('followonBtnRow').style.display = 'none';
+    document.getElementById('followonArea').innerHTML = '';
+    setStatus('idle', 'Enter a date and run the scout.');
+  }
+}
 
 // ── RUN SCOUT ──────────────────────────────────────────────────────────────
 document.getElementById('runBtn').addEventListener('click', runScout);
 
 async function runScout() {
-  const apiKey  = getSavedKey();
-  const dateVal = document.getElementById('dateInput').value;
-  if (!apiKey)  { setStatus('error', 'No API key found — add one in Settings.'); return; }
-  if (!dateVal) { setStatus('error', 'Please select a date.'); return; }
-
-  currentDate = dateVal;
+  const apiKey = getSavedKey(), dateVal = document.getElementById('dateInput').value;
+  if (!apiKey)  { setStatus('error','No API key — add one in Settings.'); return; }
+  if (!dateVal) { setStatus('error','Please select a date.'); return; }
+  lastAction = { type:'scout', market:currentMarket, date:dateVal };
   const btn = document.getElementById('runBtn');
   btn.disabled = true;
+  tabState[currentMarket].followon = null;
   document.getElementById('followonBtnRow').style.display = 'none';
   document.getElementById('followonArea').innerHTML = '';
   document.getElementById('errorDetail').style.display = 'none';
+  document.getElementById('retryRow').style.display = 'none';
   setStatus('loading', `Scouting ${marketLabels[currentMarket]} for ${dateVal}…`);
   showSkeleton();
 
   try {
-    const stocks = await fetchTop10(apiKey, currentMarket, dateVal);
-    currentResults = stocks;
+    const stocks = await withRetry(() => fetchTop10(apiKey, currentMarket, dateVal));
+    tabState[currentMarket].results = stocks;
+    tabState[currentMarket].date    = dateVal;
+    markTabHasData(currentMarket, true);
     renderTop10(stocks, dateVal);
     setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${dateVal}`);
     if (stocks.length > 0) document.getElementById('followonBtnRow').style.display = 'block';
-    logUsage('scout', currentMarket, dateVal, 1, 3);
-  } catch (err) {
-    const msg = err.message || 'Unknown error';
-    setStatus('error', 'Scout failed — see details below.');
-    showErrorDetail(msg);
+    logUsage('scout', currentMarket, dateVal, 1);
+    saveToFirebase();
+  } catch(err) {
+    setStatus('error','Scout failed — see details below.');
+    showErrorDetail(err.message);
+    showRetry(err.message);
     showEmptyError();
-  } finally {
-    btn.disabled = false;
-  }
+  } finally { btn.disabled = false; }
 }
 
 // ── LOAD ALL FOLLOW-ON ─────────────────────────────────────────────────────
 async function loadAllFollowon() {
-  const apiKey = getSavedKey();
-  if (!apiKey || !currentResults.length) return;
-
+  const apiKey = getSavedKey(), state = tabState[currentMarket];
+  if (!apiKey || !state.results?.length) return;
+  lastAction = { type:'followon', market:currentMarket, date:state.date };
   const btn = document.getElementById('followonBtn');
-  btn.disabled = true;
-  btn.textContent = 'Loading follow-on data…';
-  setStatus('loading', `Fetching 10-day follow-on for all ${currentResults.length} stocks…`);
+  btn.disabled = true; btn.textContent = 'Loading follow-on data…';
+  setStatus('loading', `Fetching 10-day follow-on for all ${state.results.length} stocks…`);
   document.getElementById('errorDetail').style.display = 'none';
+  document.getElementById('retryRow').style.display = 'none';
 
   try {
-    const data = await fetchAllFollowon(apiKey, currentResults, currentDate);
-    renderAllFollowon(data);
-    setStatus('ok', `Follow-on data loaded · ${currentDate}`);
-    logUsage('followon', currentMarket, currentDate, 1, 5);
+    const data = await withRetry(() => fetchAllFollowon(apiKey, state.results, state.date));
+    tabState[currentMarket].followon = data;
+    renderAllFollowon(data, state.results);
+    setStatus('ok', `Follow-on loaded · ${state.date}`);
+    logUsage('followon', currentMarket, state.date, 1);
     btn.textContent = 'Follow-on loaded';
-  } catch (err) {
-    const msg = err.message || 'Unknown error';
-    setStatus('error', 'Follow-on failed — see details below.');
-    showErrorDetail(msg);
-    btn.disabled = false;
-    btn.textContent = 'Retry follow-on load';
+    saveToFirebase();
+  } catch(err) {
+    setStatus('error','Follow-on failed — see details below.');
+    showErrorDetail(err.message);
+    showRetry(err.message);
+    btn.disabled = false; btn.textContent = 'Retry follow-on load';
+  }
+}
+
+function retryLast() {
+  if (!lastAction) return;
+  document.getElementById('retryRow').style.display = 'none';
+  if (lastAction.type === 'scout') { document.getElementById('dateInput').value = lastAction.date; runScout(); }
+  else { loadAllFollowon(); }
+}
+
+// ── RETRY WRAPPER ──────────────────────────────────────────────────────────
+async function withRetry(fn, retries = MAX_RETRIES) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch(err) {
+      const is503 = err.message && err.message.includes('503');
+      if (is503 && attempt < retries) {
+        const wait = (attempt + 1) * 8000; // 8s, 16s
+        setStatus('loading', `Gemini busy — retrying in ${wait/1000}s… (attempt ${attempt+1}/${retries})`);
+        await new Promise(r => setTimeout(r, wait));
+      } else {
+        throw err;
+      }
+    }
   }
 }
 
@@ -621,43 +651,29 @@ async function fetchTop10(apiKey, market, date) {
     us_small: 'Russell 2000 small cap US stock market',
     ngx:      'Nigerian Stock Exchange (NGX)'
   };
-  const prompt = `For the trading session on ${date}, identify the top 10 best-performing stocks in the ${desc[market]} by single-day percentage gain. Use your training data and financial knowledge. If your data for this specific date is limited or uncertain, still provide your best estimates but set data_note to clearly flag any figures that are estimated or uncertain.
+  const prompt = `For the trading session on ${date}, list the top 10 best-performing stocks in the ${desc[market]} by single-day percentage gain, using your training data.
 
-Return ONLY a valid JSON array — no markdown, no explanation, no preamble, no code fences. Each object:
-- ticker: string
-- name: string (max 28 chars)
-- open: number
-- close: number
-- change_pct: number (e.g. 8.34 for +8.34%)
-- volume: string (e.g. "2.1M")
-- sector: string
-- data_note: string (empty if clean)
+Return ONLY a raw JSON array (no markdown, no code fences, no explanation).
+Start with [ and end with ]. Each element must be a JSON object with these keys:
+"ticker", "name" (max 28 chars, no apostrophes — use safe ASCII only), "open" (number), "close" (number), "change_pct" (number, e.g. 8.34), "volume" (string), "sector" (string), "data_note" (string, empty if clean).
+Sort descending by change_pct.`;
 
-Sort descending by change_pct. Start your response with [ and end with ].`;
-
-  const text = await callGemini(apiKey, prompt);
-  return parseArr(text);
+  return parseArr(await callGemini(apiKey, prompt));
 }
 
 // ── GEMINI: ALL FOLLOW-ON ─────────────────────────────────────────────────
 async function fetchAllFollowon(apiKey, stocks, date) {
-  const list     = stocks.map((s, i) => `${i+1}. ${s.ticker} (${s.name}, base close ${s.close} on ${date})`).join('\n');
+  const list = stocks.map((s,i) => `${i+1}. ${s.ticker} base close ${s.close} on ${date}`).join('\n');
   const nextDate = getNextTradingDay(date);
-  const prompt   = `These stocks were top performers on ${date}:\n\n${list}\n\nUsing your training data and financial knowledge, retrieve daily closing prices for each for the 10 trading days starting from ${nextDate}. If specific daily prices are uncertain for any stock, include your best estimate but set the note field to flag it.
+  const prompt = `These stocks were top performers on ${date}:\n${list}\n\nReturn their daily closing prices for the 10 trading days starting ${nextDate}, using your training data.
 
-Return ONLY a valid JSON object — no markdown, no preamble, no code fences. One key per ticker. Each value is an array of up to 10 objects:
-- day: number (1-10)
-- date: string (YYYY-MM-DD)
-- close: number
-- change_pct: number (cumulative % vs base close on ${date})
-- daily_pct: number (% vs prior day)
-- note: string (empty if clean)
+Return ONLY a raw JSON object (no markdown, no code fences). Start with { and end with }.
+One key per ticker symbol. Each value is a JSON array of objects with keys:
+"day" (number 1-10), "date" (YYYY-MM-DD), "close" (number), "change_pct" (number, cumulative vs base close on ${date}), "daily_pct" (number), "note" (string, empty if clean).
+Omit days with no data. Use only ASCII characters — no curly quotes or apostrophes in any string values.`;
 
-Start your response with { and end with }.`;
-
-  const text = await callGemini(apiKey, prompt);
-  const clean = text.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+  const raw = await callGemini(apiKey, prompt);
+  return safeParseObject(raw);
 }
 
 // ── GEMINI HTTP ────────────────────────────────────────────────────────────
@@ -666,268 +682,180 @@ async function callGemini(apiKey, prompt) {
   let res;
   try {
     res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 4000 }
-      })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.1,maxOutputTokens:4000} })
     });
-  } catch (networkErr) {
-    throw new Error('Network error — check your connection.\n' + networkErr.message);
-  }
+  } catch(e) { throw new Error('Network error — check your connection.\n'+e.message); }
 
   if (!res.ok) {
-    let errBody = {};
-    try { errBody = await res.json(); } catch {}
-    const code = res.status;
-    const msg  = errBody?.error?.message || `HTTP ${code}`;
-    if (code === 400) throw new Error(`Bad request (400): ${msg}\nCheck your API key format.`);
-    if (code === 403) throw new Error(`Permission denied (403): ${msg}\nVerify the key is enabled for Gemini API in Google AI Studio.`);
-    if (code === 429) throw new Error(`Rate limit hit (429): ${msg}\nWait a moment and try again.`);
-    throw new Error(`Gemini API error (${code}): ${msg}`);
+    let b = {}; try { b = await res.json(); } catch {}
+    const c = res.status, m = b?.error?.message || `HTTP ${c}`;
+    if (c===400) throw new Error(`Bad request (400): ${m}\nCheck your API key.`);
+    if (c===403) throw new Error(`Permission denied (403): ${m}\nVerify key is enabled in Google AI Studio.`);
+    if (c===429) throw new Error(`Rate limit (429): ${m}\nWait a moment and retry.`);
+    if (c===503) throw new Error(`503: ${m}`);
+    throw new Error(`Gemini API error (${c}): ${m}`);
   }
 
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    const reason = data?.candidates?.[0]?.finishReason || 'unknown';
-    throw new Error(`No text in Gemini response. Finish reason: ${reason}\nFull response: ${JSON.stringify(data).slice(0, 300)}`);
-  }
+  if (!text) throw new Error(`No text in response. Finish reason: ${data?.candidates?.[0]?.finishReason||'unknown'}`);
   return text;
 }
 
+// ── JSON HELPERS ───────────────────────────────────────────────────────────
+function sanitiseJson(raw) {
+  // Strip code fences
+  let s = raw.replace(/```json|```/g, '').trim();
+  // Replace curly/smart quotes with straight quotes
+  s = s.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+  // Find the first [ or { and last ] or }
+  const arrStart = s.indexOf('['), objStart = s.indexOf('{');
+  if (arrStart !== -1 && (objStart === -1 || arrStart < objStart)) {
+    s = s.slice(arrStart, s.lastIndexOf(']') + 1);
+  } else if (objStart !== -1) {
+    s = s.slice(objStart, s.lastIndexOf('}') + 1);
+  }
+  return s;
+}
+
 function parseArr(raw) {
-  const clean  = raw.replace(/```json|```/g, '').trim();
+  const clean = sanitiseJson(raw);
   const parsed = JSON.parse(clean);
-  if (!Array.isArray(parsed)) throw new Error(`Expected JSON array, got: ${typeof parsed}`);
+  if (!Array.isArray(parsed)) throw new Error('Expected JSON array.');
   return parsed;
 }
 
-function getNextTradingDay(dateStr) {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() + 1);
-  if (d.getDay() === 0) d.setDate(d.getDate() + 1);
-  if (d.getDay() === 6) d.setDate(d.getDate() + 2);
-  return d.toISOString().slice(0, 10);
+function safeParseObject(raw) {
+  const clean = sanitiseJson(raw);
+  const parsed = JSON.parse(clean);
+  if (typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Expected JSON object.');
+  return parsed;
+}
+
+function getNextTradingDay(ds) {
+  const d = new Date(ds); d.setDate(d.getDate()+1);
+  if (d.getDay()===0) d.setDate(d.getDate()+1);
+  if (d.getDay()===6) d.setDate(d.getDate()+2);
+  return d.toISOString().slice(0,10);
 }
 
 // ── RENDER TOP 10 ──────────────────────────────────────────────────────────
 function renderTop10(stocks, date) {
   const area = document.getElementById('resultsArea');
-  if (!stocks || !stocks.length) {
-    area.innerHTML = `<div class="empty-state"><div class="empty-label">No data</div><p>No results found. Try a different date or check markets were open.</p></div>`;
-    return;
-  }
-  let html = `<div class="section-header">
-    <span class="section-title">Top 10 movers · ${marketLabels[currentMarket]}</span>
-    <span class="section-badge">${date}</span>
-  </div>
-  <table class="top10-table">
-    <thead><tr>
-      <th>#</th><th>Ticker / Company</th>
-      <th class="r">Open</th><th class="r">Close</th>
-      <th class="r">Change</th><th class="r">Volume</th><th>Sector</th>
-    </tr></thead><tbody>`;
-  stocks.forEach((s, i) => {
+  if (!stocks?.length) { area.innerHTML=`<div class="empty-state"><div class="empty-label">No data</div><p>No results found. Try a different date.</p></div>`; return; }
+  let h = `<div class="section-header"><span class="section-title">Top 10 movers · ${marketLabels[currentMarket]}</span><span class="section-badge">${date}</span></div>
+  <table class="top10-table"><thead><tr><th>#</th><th>Ticker / Company</th><th class="r">Open</th><th class="r">Close</th><th class="r">Change</th><th class="r">Volume</th><th>Sector</th></tr></thead><tbody>`;
+  stocks.forEach((s,i) => {
     const g = s.change_pct >= 0;
-    html += `<tr class="${i===0?'rank1':''}">
-      <td class="rank-num">${i+1}</td>
-      <td>
-        <span class="ticker">${esc(s.ticker)}</span>
-        <span class="co-name">${esc(s.name)}</span>
-        ${s.data_note ? `<span class="note-warn">⚠ ${esc(s.data_note)}</span>` : ''}
-      </td>
-      <td class="r">${fmtP(s.open)}</td>
-      <td class="r">${fmtP(s.close)}</td>
+    h += `<tr class="${i===0?'rank1':''}"><td class="rank-num">${i+1}</td>
+      <td><span class="ticker">${esc(s.ticker)}</span><span class="co-name">${esc(s.name)}</span>${s.data_note?`<span class="note-warn">⚠ ${esc(s.data_note)}</span>`:''}</td>
+      <td class="r">${fmtP(s.open)}</td><td class="r">${fmtP(s.close)}</td>
       <td class="r ${g?'gain':'loss'}">${g?'+':''}${(+s.change_pct).toFixed(2)}%</td>
       <td class="r" style="color:var(--muted)">${esc(s.volume||'—')}</td>
-      <td style="font-size:10px;color:var(--muted)">${esc(s.sector||'—')}</td>
-    </tr>`;
+      <td style="font-size:10px;color:var(--muted)">${esc(s.sector||'—')}</td></tr>`;
   });
-  html += `</tbody></table>`;
-  area.innerHTML = html;
+  h += `</tbody></table>`;
+  area.innerHTML = h;
 }
 
 // ── RENDER ALL FOLLOW-ON ───────────────────────────────────────────────────
-function renderAllFollowon(data) {
+function renderAllFollowon(data, stocks) {
   const area = document.getElementById('followonArea');
-  if (!data || !Object.keys(data).length) {
-    area.innerHTML = `<div class="empty-state"><div class="empty-label">No follow-on data</div><p>Could not retrieve follow-on data.</p></div>`;
-    return;
-  }
-  let html = `<div class="section-header" style="margin-bottom:16px;">
-    <span class="section-title">10-day follow-on · all stocks</span>
-    <span class="section-badge">${currentDate} +10 trading days</span>
-  </div><div class="followon-section">`;
-  currentResults.forEach(stock => {
+  if (!data || !Object.keys(data).length) { area.innerHTML=`<div class="empty-state"><div class="empty-label">No follow-on data</div></div>`; return; }
+  const src = stocks || tabState[currentMarket].results || [];
+  const date = tabState[currentMarket].date || '';
+  let h = `<div class="section-header" style="margin-bottom:16px;"><span class="section-title">10-day follow-on · all stocks</span><span class="section-badge">${date} +10 days</span></div><div class="followon-section">`;
+  src.forEach(stock => {
     const days = data[stock.ticker] || [];
-    html += `<div class="followon-stock">
-      <div class="followon-stock-header">
-        <span class="followon-ticker">${esc(stock.ticker)}</span>
-        <span class="followon-name">${esc(stock.name)}</span>
-        <span class="followon-base">Base: ${fmtP(stock.close)}</span>
-      </div><div class="day-grid">`;
-    if (!days.length) {
-      html += `<span class="day-unavail">No follow-on data available.</span>`;
-    } else {
-      days.forEach(d => {
-        const p = d.change_pct >= 0;
-        html += `<div class="day-card ${p?'pos':'neg'}">
-          <div class="dl">D+${d.day}</div>
-          <div class="dp" style="color:${p?'var(--accent)':'var(--red)'}">${p?'+':''}${(+d.change_pct).toFixed(1)}%</div>
-          <div class="dpr">${fmtP(d.close)}</div>
-          ${d.note?`<div class="dest">~est</div>`:''}
-        </div>`;
-      });
-    }
-    html += `</div></div>`;
+    h += `<div class="followon-stock"><div class="followon-stock-header"><span class="followon-ticker">${esc(stock.ticker)}</span><span class="followon-name">${esc(stock.name)}</span><span class="followon-base">Base: ${fmtP(stock.close)}</span></div><div class="day-grid">`;
+    if (!days.length) { h += `<span class="day-unavail">No follow-on data available.</span>`; }
+    else days.forEach(d => {
+      const p = d.change_pct >= 0;
+      h += `<div class="day-card ${p?'pos':'neg'}"><div class="dl">D+${d.day}</div><div class="dp" style="color:${p?'var(--accent)':'var(--red)'}">${p?'+':''}${(+d.change_pct).toFixed(1)}%</div><div class="dpr">${fmtP(d.close)}</div>${d.note?`<div class="dest">~est</div>`:''}</div>`;
+    });
+    h += `</div></div>`;
   });
-  html += `</div>`;
-  area.innerHTML = html;
+  h += `</div>`;
+  area.innerHTML = h;
 }
 
 // ── USAGE ──────────────────────────────────────────────────────────────────
-function getUsageStore() {
-  try { return JSON.parse(localStorage.getItem('ms_usage') || '{"sessions":[],"daily":{},"monthly":{}}'); }
-  catch { return { sessions:[], daily:{}, monthly:{} }; }
-}
-function saveUsageStore(s) { try { localStorage.setItem('ms_usage', JSON.stringify(s)); } catch {} }
+function getUsageStore() { try { return JSON.parse(localStorage.getItem('ms_usage')||'{"sessions":[],"daily":{},"monthly":{}}'); } catch { return {sessions:[],daily:{},monthly:{}}; } }
+function saveUsageStore(s) { try { localStorage.setItem('ms_usage',JSON.stringify(s)); } catch {} }
 
-function logUsage(type, market, queryDate, calls, searches) {
-  const store  = getUsageStore();
-  const now    = new Date();
-  const dayKey = now.toISOString().slice(0,10);
-  const monKey = now.toISOString().slice(0,7);
-  store.sessions.unshift({ ts:now.toISOString(), type, market, queryDate, calls, searches });
-  if (store.sessions.length > 100) store.sessions = store.sessions.slice(0,100);
-  store.daily[dayKey]   = store.daily[dayKey]   || {calls:0,searches:0};
-  store.monthly[monKey] = store.monthly[monKey] || {calls:0,searches:0};
-  store.daily[dayKey].calls      += calls;  store.daily[dayKey].searches      += searches;
-  store.monthly[monKey].calls    += calls;  store.monthly[monKey].searches    += searches;
+function logUsage(type, market, queryDate, calls) {
+  const store = getUsageStore(), now = new Date();
+  const dk = now.toISOString().slice(0,10), mk = now.toISOString().slice(0,7);
+  store.sessions.unshift({ts:now.toISOString(),type,market,queryDate,calls});
+  if (store.sessions.length>100) store.sessions=store.sessions.slice(0,100);
+  store.daily[dk]   = store.daily[dk]   || {calls:0}; store.daily[dk].calls   += calls;
+  store.monthly[mk] = store.monthly[mk] || {calls:0}; store.monthly[mk].calls += calls;
   saveUsageStore(store);
 }
-
-function clearUsage() {
-  if (!confirm('Clear all usage history?')) return;
-  localStorage.removeItem('ms_usage');
-  renderUsage();
-}
+function clearUsage() { if(!confirm('Clear all usage history?')) return; localStorage.removeItem('ms_usage'); renderUsage(); }
 
 function renderUsage() {
-  const store = getUsageStore();
-  const today = new Date().toISOString().slice(0,10);
-  const month = new Date().toISOString().slice(0,7);
-  const day   = store.daily[today]   || {calls:0,searches:0};
-  const mon   = store.monthly[month] || {calls:0,searches:0};
-
-  setText('uCallsToday',  day.calls);
-  setText('uSearchToday', day.searches);
-  setText('uCallsMonth',  mon.calls);
-  setText('uSearchMonth', mon.searches);
-  setText('uSessions',    store.sessions.length);
-  setText('uRemaining',   Math.max(0, DAILY_LIMIT - day.calls).toLocaleString());
-
-  setBar('uBarDay',         day.calls    / DAILY_LIMIT,    'accent');
-  setBar('uBarSearch',      day.searches / 167,            'purple');
-  setBar('uBarMonth',       mon.calls    / MONTHLY_CALLS,  'amber');
-  setBar('uBarSearchMonth', mon.searches / MONTHLY_SEARCH, 'red');
-  warnBar('uBarDay',          day.calls    / DAILY_LIMIT);
-  warnBar('uBarSearchMonth',  mon.searches / MONTHLY_SEARCH);
-
-  const reset = new Date(); reset.setDate(reset.getDate()+1); reset.setHours(0,0,0,0);
-  const hrs   = Math.round((reset - new Date()) / 3600000);
-  setText('usageResetNote', `Resets in ${hrs}h · ${month}`);
-
-  const tbody    = document.getElementById('logBody');
-  const logEmpty = document.getElementById('logEmpty');
-  if (!store.sessions.length) { tbody.innerHTML=''; logEmpty.style.display='block'; return; }
-  logEmpty.style.display = 'none';
-  tbody.innerHTML = store.sessions.map(s => {
-    const dt   = new Date(s.ts);
-    const dstr = dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+
-                 dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    const ml   = {us_large:'US Large',us_small:'US Small',ngx:'NGX'}[s.market]||s.market;
-    return `<tr>
-      <td style="color:var(--muted)">${dstr}</td><td>${ml}</td>
-      <td style="font-family:var(--mono)">${s.queryDate}</td>
-      <td>${s.type==='scout'?'Top 10 Scout':'10-day Follow-on'}</td>
-      <td class="r">${s.calls}</td><td class="r">${s.searches}</td>
-    </tr>`;
+  const store = getUsageStore(), today = new Date().toISOString().slice(0,10), month = new Date().toISOString().slice(0,7);
+  const day = store.daily[today]||{calls:0}, mon = store.monthly[month]||{calls:0};
+  setText('uCallsToday',day.calls); setText('uCallsMonth',mon.calls);
+  setText('uSessions',store.sessions.length); setText('uRemaining',Math.max(0,DAILY_LIMIT-day.calls).toLocaleString());
+  setBar('uBarDay',day.calls/DAILY_LIMIT,'accent'); setBar('uBarMonth',mon.calls/MONTHLY_CALLS,'amber');
+  warnBar('uBarDay',day.calls/DAILY_LIMIT);
+  const reset=new Date(); reset.setDate(reset.getDate()+1); reset.setHours(0,0,0,0);
+  setText('usageResetNote',`Resets in ${Math.round((reset-new Date())/3600000)}h · ${month}`);
+  const tbody=document.getElementById('logBody'), empty=document.getElementById('logEmpty');
+  if(!store.sessions.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=store.sessions.map(s=>{
+    const dt=new Date(s.ts), ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const ml={us_large:'US Large',us_small:'US Small',ngx:'NGX'}[s.market]||s.market;
+    return `<tr><td style="color:var(--muted)">${ds}</td><td>${ml}</td><td style="font-family:var(--mono)">${s.queryDate}</td><td>${s.type==='scout'?'Top 10':'Follow-on'}</td><td class="r">${s.calls}</td></tr>`;
   }).join('');
 }
 
+// ── HARD REFRESH ───────────────────────────────────────────────────────────
+async function hardRefresh() {
+  showToast('Clearing cache…');
+  try {
+    if ('serviceWorker' in navigator) { const r=await navigator.serviceWorker.getRegistrations(); await Promise.all(r.map(x=>x.unregister())); }
+    await Promise.all((await caches.keys()).map(k=>caches.delete(k)));
+  } catch {}
+  setTimeout(()=>window.location.reload(true),600);
+}
+
 // ── UI HELPERS ─────────────────────────────────────────────────────────────
-function setStatus(type, msg) {
-  const bar = document.getElementById('statusBar');
-  bar.className = 'status-bar' + (type !== 'idle' ? ' '+type : '');
-  document.getElementById('statusText').textContent = msg;
+function setStatus(type,msg) {
+  const b=document.getElementById('statusBar'); b.className='status-bar'+(type!=='idle'?' '+type:'');
+  document.getElementById('statusText').textContent=msg;
 }
-
-function showErrorDetail(msg) {
-  const el = document.getElementById('errorDetail');
-  el.textContent = msg;
-  el.style.display = 'block';
+function showErrorDetail(msg) { const el=document.getElementById('errorDetail'); el.textContent=msg; el.style.display='block'; }
+function showRetry(msg) {
+  const row=document.getElementById('retryRow'), hint=document.getElementById('retryHint');
+  row.style.display='block';
+  if (msg && msg.includes('503')) hint.textContent='Gemini is busy — click to retry automatically.';
+  else hint.textContent='';
 }
-
 function showSkeleton() {
-  let h = '';
-  for (let i=0;i<10;i++) h += `<div class="skel-row">
-    <div class="skel" style="width:14px;height:12px"></div>
-    <div class="skel" style="width:70px;height:12px"></div>
-    <div class="skel" style="width:100px;height:12px;margin-left:auto"></div>
-    <div class="skel" style="width:55px;height:12px"></div>
-    <div class="skel" style="width:55px;height:12px"></div>
-  </div>`;
-  document.getElementById('resultsArea').innerHTML = h;
+  let h=''; for(let i=0;i<10;i++) h+=`<div class="skel-row"><div class="skel" style="width:14px;height:12px"></div><div class="skel" style="width:70px;height:12px"></div><div class="skel" style="width:100px;height:12px;margin-left:auto"></div><div class="skel" style="width:55px;height:12px"></div></div>`;
+  document.getElementById('resultsArea').innerHTML=h;
 }
+function showEmptyError() { document.getElementById('resultsArea').innerHTML=`<div class="empty-state"><div class="empty-label">No results</div><p>See the error detail above.</p></div>`; }
+function setText(id,v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+function setBar(id,ratio,c) { const el=document.getElementById(id); if(!el)return; el.style.width=Math.min(100,ratio*100).toFixed(1)+'%'; el.style.background=`var(--${c})`; }
+function warnBar(id,ratio) { const el=document.getElementById(id); if(!el)return; if(ratio>0.85) el.style.background='var(--red)'; else if(ratio>0.6) el.style.background='var(--amber)'; }
+function fmtP(v) { if(v==null||isNaN(+v)) return '—'; return (+v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function esc(s) { if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function showEmptyError() {
-  document.getElementById('resultsArea').innerHTML = `<div class="empty-state"><div class="empty-label">No results</div><p>Could not retrieve data.<br/>See the error detail above for the exact reason.</p></div>`;
-}
-
-function setText(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-
-function setBar(id, ratio, colorVar) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.width      = Math.min(100, ratio*100).toFixed(1)+'%';
-  el.style.background = `var(--${colorVar})`;
-}
-function warnBar(id, ratio) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if      (ratio > 0.85) el.style.background = 'var(--red)';
-  else if (ratio > 0.6)  el.style.background = 'var(--amber)';
-}
-
-function fmtP(v) {
-  if (v==null||isNaN(+v)) return '—';
-  return (+v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ── TOAST ──────────────────────────────────────────────────────────────────
 let toastTimer;
-function showToast(msg, isError=false) {
-  const el  = document.getElementById('toast');
-  const ico = document.getElementById('toastIcon');
-  const txt = document.getElementById('toastMsg');
-  if (ico) ico.textContent = isError ? '✕' : '✓';
-  if (txt) txt.textContent = msg;
-  el.className = 'toast' + (isError ? ' error-toast' : '');
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+function showToast(msg,isError=false) {
+  const el=document.getElementById('toast'),ico=document.getElementById('toastIcon'),txt=document.getElementById('toastMsg');
+  if(ico) ico.textContent=isError?'✕':'✓'; if(txt) txt.textContent=msg;
+  el.className='toast'+(isError?' error-toast':''); el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
 }
 
-// ── SERVICE WORKER ─────────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
+if ('serviceWorker' in navigator) { window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
 </script>
 </body>
 </html>
