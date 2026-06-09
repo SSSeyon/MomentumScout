@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0e14" />
+  <meta name="description" content="Momentum Scout — Find the top daily movers and track their 10-day follow-through." />
+  <title>Momentum Scout</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0e14;
+      --surface:  #111827;
+      --surface2: #1a2333;
+      --border:   #1f2d3d;
+      --accent:   #00ff9d;
+      --red:      #ff4d6a;
+      --amber:    #f59e0b;
+      --purple:   #818cf8;
+      --muted:    #7c8a9e;
+      --text:     #e2e8f0;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
+    }
+    html, body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--bg); z-index: 100;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 28px; height: 28px; border: 2px solid var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .logo-text { font-family: var(--mono); font-size: 14px; font-weight: 600; letter-spacing: 0.08em; }
+    .logo-text span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .api-wrap { display: flex; align-items: center; gap: 7px; }
+    .api-wrap label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+    .api-wrap input {
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--mono); font-size: 12px; padding: 6px 10px; border-radius: 4px;
+      width: 200px; outline: none;
+    }
+    .api-wrap input:focus { border-color: var(--accent); }
+    .nav-btn {
+      font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s;
+    }
+    .nav-btn:hover, .nav-btn.active { border-color: var(--accent); color: var(--accent); }
+
+    /* MAIN */
+    main { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
+
+    /* TABS */
+    .market-tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .tab { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; padding: 9px 16px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* CONTROLS */
+    .controls { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+    .field input[type="date"] { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 13px; padding: 9px 12px; border-radius: 5px; outline: none; cursor: pointer; }
+    .field input[type="date"]:focus { border-color: var(--accent); }
+    .run-btn { background: var(--accent); color: #0a0e14; border: none; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 10px 22px; border-radius: 5px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+    .run-btn:hover { opacity: 0.88; }
+    .run-btn:active { transform: scale(0.97); }
+    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* STATUS */
+    .status-bar { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 16px; min-height: 18px; display: flex; align-items: center; gap: 7px; }
+    .status-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+    .status-bar.loading .dot { background: var(--accent); animation: pulse 1s infinite; }
+    .status-bar.error .dot { background: var(--red); }
+    .status-bar.ok .dot { background: var(--accent); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* DISCLAIMER */
+    .disclaimer { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 5px; padding: 10px 14px; font-size: 11px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+    .disclaimer strong { color: var(--amber); font-family: var(--mono); }
+    .ngx-notice { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--purple); border-radius: 5px; padding: 9px 13px; font-size: 11px; color: var(--muted); margin-bottom: 16px; display: none; }
+
+    /* SECTION HEADER */
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+    .section-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .section-badge { font-family: var(--mono); font-size: 10px; color: var(--accent); }
+
+    /* TOP 10 TABLE */
+    .top10-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-family: var(--mono); }
+    .top10-table thead tr { border-bottom: 1px solid var(--border); }
+    .top10-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 7px 10px; text-align: left; font-weight: 500; }
+    .top10-table th.r { text-align: right; }
+    .top10-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .top10-table tbody tr:hover { background: var(--surface2); }
+    .top10-table tbody tr.rank1 { background: rgba(0,255,157,0.04); }
+    .top10-table tbody tr.rank1:hover { background: rgba(0,255,157,0.08); }
+    .top10-table td { padding: 11px 10px; font-size: 12px; }
+    .top10-table td.r { text-align: right; }
+    .rank-num { font-size: 10px; color: var(--muted); }
+    .rank1 .rank-num { color: var(--accent); }
+    .ticker { font-weight: 600; font-size: 13px; }
+    .rank1 .ticker { color: var(--accent); }
+    .co-name { font-size: 10px; color: var(--muted); display: block; margin-top: 1px; }
+    .gain { color: var(--accent); }
+    .loss { color: var(--red); }
+    .note-warn { font-size: 9px; color: var(--amber); display: block; margin-top: 2px; }
+
+    /* LOAD FOLLOWON BTN */
+    .followon-btn-row { margin-bottom: 32px; }
+    .followon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+    .followon-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .followon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* FOLLOWON SECTION */
+    .followon-section { margin-bottom: 40px; }
+    .followon-stock { margin-bottom: 22px; }
+    .followon-stock-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .followon-ticker { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); }
+    .followon-name { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+    .followon-base { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-left: auto; }
+    .day-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+    .day-card { flex: 0 0 68px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 7px 5px; text-align: center; }
+    .day-card .dl { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 3px; }
+    .day-card .dp { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    .day-card .dpr { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
+    .day-card .dest { font-size: 8px; color: var(--amber); margin-top: 2px; }
+    .day-card.pos { border-color: rgba(0,255,157,0.22); }
+    .day-card.neg { border-color: rgba(255,77,106,0.22); }
+    .day-unavail { font-family: var(--mono); font-size: 11px; color: var(--muted); font-style: italic; padding: 8px 0; }
+
+    /* EMPTY / SKELETON */
+    .empty-state { text-align: center; padding: 70px 20px; border: 1px dashed var(--border); border-radius: 8px; }
+    .empty-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 10px; }
+    .empty-state p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .skel-row { display: flex; gap: 14px; padding: 12px 10px; border-bottom: 1px solid var(--border); align-items: center; }
+    .skel { background: var(--surface2); border-radius: 3px; animation: shimmer 1.3s infinite; }
+    @keyframes shimmer { 0%,100%{opacity:0.45} 50%{opacity:0.9} }
+
+    /* USAGE PANEL */
+    #usagePanel { display: none; }
+    .usage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .usage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+    .usage-card .uc-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+    .usage-card .uc-val { font-family: var(--mono); font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
+    .usage-card .uc-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .usage-card .uc-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+    .usage-card .uc-bar { height: 100%; border-radius: 2px; transition: width 0.4s; }
+    .usage-log { font-family: var(--mono); font-size: 11px; }
+    .usage-log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .usage-log-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .clear-btn { font-size: 10px; color: var(--red); background: none; border: 1px solid var(--red); border-radius: 3px; padding: 3px 8px; cursor: pointer; font-family: var(--mono); opacity: 0.7; transition: opacity 0.15s; }
+    .clear-btn:hover { opacity: 1; }
+    .log-table { width: 100%; border-collapse: collapse; }
+    .log-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
+    .log-table td { font-size: 11px; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .log-table td.r { text-align: right; }
+    .log-empty { font-size: 12px; color: var(--muted); padding: 20px 0; text-align: center; }
+
+    @media (max-width: 600px) {
+      header { padding: 12px 14px; }
+      main { padding: 18px 12px 60px; }
+      .api-wrap input { width: 150px; }
+      .co-name { display: none; }
+      .day-card { flex: 0 0 60px; }
+      .usage-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <polyline points="1,12 5,7 9,9 15,3" stroke="#00ff9d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="15" cy="3" r="1.5" fill="#00ff9d"/>
+      </svg>
+    </div>
+    <span class="logo-text">MOMENTUM<span>SCOUT</span></span>
+  </div>
+  <div class="header-right">
+    <button class="nav-btn active" id="navScout" onclick="showView('scout')">Scout</button>
+    <button class="nav-btn" id="navUsage" onclick="showView('usage')">Usage</button>
+    <div class="api-wrap">
+      <label>API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="AIza..." autocomplete="off" />
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SCOUT VIEW -->
+  <div id="scoutPanel">
+    <div class="market-tabs">
+      <button class="tab active" data-market="us_large">US Large Cap</button>
+      <button class="tab" data-market="us_small">US Small Cap</button>
+      <button class="tab" data-market="ngx">NGX Nigeria</button>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="dateInput" />
+      </div>
+      <button class="run-btn" id="runBtn">Run Scout</button>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+      <span class="dot"></span>
+      <span id="statusText">Enter a date and run the scout.</span>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Notice</strong> — Results are retrieved via Gemini with Google Search grounding and are best-effort. Verify figures against primary exchange data before making any investment decision. Past momentum does not guarantee future performance.
+    </div>
+
+    <div class="ngx-notice" id="ngxNotice">
+      NGX data availability varies. Results may be incomplete for older dates or less-liquid securities.
+    </div>
+
+    <div id="resultsArea">
+      <div class="empty-state">
+        <div class="empty-label">Awaiting input</div>
+        <p>Select a market, pick a date,<br/>then run the scout to see the top 10 movers.</p>
+      </div>
+    </div>
+
+    <div class="followon-btn-row" id="followonBtnRow" style="display:none;">
+      <button class="followon-btn" id="followonBtn" onclick="loadAllFollowon()">Load 10-day follow-on for all stocks</button>
+    </div>
+
+    <div id="followonArea"></div>
+  </div>
+
+  <!-- USAGE VIEW -->
+  <div id="usagePanel">
+    <div class="section-header" style="margin-bottom:20px;">
+      <span class="section-title">API Usage</span>
+      <span class="section-badge" id="usageResetNote"></span>
+    </div>
+
+    <div class="usage-grid">
+      <div class="usage-card">
+        <div class="uc-label">Calls Today</div>
+        <div class="uc-val" id="uCallsToday">0</div>
+        <div class="uc-sub">of 1,500 daily limit</div>
+        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarDay" style="width:0%;background:var(--accent)"></div></div>
+      </div>
+      <div class="usage-card">
+        <div class="uc-label">Search Queries Today</div>
+        <div class="uc-val" id="uSearchToday">0</div>
+        <div class="uc-sub">est. ~2–6 per session</div>
+        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarSearch" style="width:0%;background:var(--purple)"></div></div>
+      </div>
+      <div class="usage-card">
+        <div class="uc-label">Calls This Month</div>
+        <div class="uc-val" id="uCallsMonth">0</div>
+        <div class="uc-sub" id="uMonthSub">of ~45,000 monthly est.</div>
+        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarMonth" style="width:0%;background:var(--amber)"></div></div>
+      </div>
+      <div class="usage-card">
+        <div class="uc-label">Search Queries Month</div>
+        <div class="uc-val" id="uSearchMonth">0</div>
+        <div class="uc-sub">of 5,000 free/month</div>
+        <div class="uc-bar-wrap"><div class="uc-bar" id="uBarSearchMonth" style="width:0%;background:var(--red)"></div></div>
+      </div>
+      <div class="usage-card">
+        <div class="uc-label">Sessions Total</div>
+        <div class="uc-val" id="uSessions">0</div>
+        <div class="uc-sub">scout + follow-on runs</div>
+      </div>
+      <div class="usage-card">
+        <div class="uc-label">Remaining Today</div>
+        <div class="uc-val" id="uRemaining">1,500</div>
+        <div class="uc-sub">API calls available</div>
+      </div>
+    </div>
+
+    <div class="usage-log">
+      <div class="usage-log-header">
+        <span class="usage-log-title">Session Log</span>
+        <button class="clear-btn" onclick="clearUsage()">Clear log</button>
+      </div>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Market</th>
+            <th>Query Date</th>
+            <th>Type</th>
+            <th class="r">API Calls</th>
+            <th class="r">Est. Searches</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+      <div id="logEmpty" class="log-empty">No sessions recorded yet.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
+const GEMINI_MODEL   = 'gemini-2.5-flash';
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const DAILY_LIMIT    = 1500;
+const MONTHLY_SEARCH = 5000;
+const MONTHLY_CALLS  = 45000; // 1500 * 30
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentMarket = 'us_large';
+let currentResults = [];
+let currentDate = '';
+
+const marketLabels = {
+  us_large: 'S&P 500 / US Large Cap',
+  us_small: 'Russell 2000 / US Small Cap',
+  ngx:      'Nigerian Stock Exchange'
+};
+
+// ── VIEWS ──────────────────────────────────────────────────────────────────
+function showView(v) {
+  document.getElementById('scoutPanel').style.display = v === 'scout' ? '' : 'none';
+  document.getElementById('usagePanel').style.display = v === 'usage' ? '' : 'none';
+  document.getElementById('navScout').classList.toggle('active', v === 'scout');
+  document.getElementById('navUsage').classList.toggle('active', v === 'usage');
+  if (v === 'usage') renderUsage();
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMarket = tab.dataset.market;
+    document.getElementById('ngxNotice').style.display = currentMarket === 'ngx' ? 'block' : 'none';
+  });
+});
+
+// Default date
+(function() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  if (d.getDay() === 0) d.setDate(d.getDate() - 2);
+  if (d.getDay() === 6) d.setDate(d.getDate() - 1);
+  document.getElementById('dateInput').value = d.toISOString().slice(0, 10);
+})();
+
+// ── RUN SCOUT ──────────────────────────────────────────────────────────────
+document.getElementById('runBtn').addEventListener('click', runScout);
+
+async function runScout() {
+  const apiKey  = document.getElementById('apiKeyInput').value.trim();
+  const dateVal = document.getElementById('dateInput').value;
+  if (!apiKey)  { setStatus('error', 'Paste your Google Gemini API key in the header field.'); return; }
+  if (!dateVal) { setStatus('error', 'Please select a date.'); return; }
+
+  currentDate = dateVal;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  document.getElementById('followonBtnRow').style.display = 'none';
+  document.getElementById('followonArea').innerHTML = '';
+  setStatus('loading', `Scouting ${marketLabels[currentMarket]} for ${dateVal}…`);
+  showSkeleton();
+
+  try {
+    const stocks = await fetchTop10(apiKey, currentMarket, dateVal);
+    currentResults = stocks;
+    renderTop10(stocks, dateVal);
+    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${dateVal}`);
+    if (stocks.length > 0) document.getElementById('followonBtnRow').style.display = 'block';
+    logUsage('scout', currentMarket, dateVal, 1, estimateSearches('scout'));
+  } catch (err) {
+    setStatus('error', err.message || 'Something went wrong. Check your API key and try again.');
+    showEmpty('error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── LOAD ALL FOLLOW-ON ─────────────────────────────────────────────────────
+async function loadAllFollowon() {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey || currentResults.length === 0) return;
+
+  const btn = document.getElementById('followonBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading follow-on data…';
+  setStatus('loading', `Fetching 10-day follow-on for all ${currentResults.length} stocks…`);
+
+  try {
+    const followonData = await fetchAllFollowon(apiKey, currentResults, currentDate, currentMarket);
+    renderAllFollowon(followonData);
+    setStatus('ok', `Follow-on data loaded · ${currentDate}`);
+    logUsage('followon', currentMarket, currentDate, 1, estimateSearches('followon'));
+    btn.textContent = 'Follow-on loaded';
+  } catch (err) {
+    setStatus('error', 'Follow-on fetch failed: ' + (err.message || 'unknown error'));
+    btn.disabled = false;
+    btn.textContent = 'Retry follow-on load';
+  }
+}
+
+// ── GEMINI API CALL: TOP 10 ───────────────────────────────────────────────
+async function fetchTop10(apiKey, market, date) {
+  const marketDesc = {
+    us_large: 'S&P 500 large cap US stock market',
+    us_small: 'Russell 2000 small cap US stock market',
+    ngx:      'Nigerian Stock Exchange (NGX)'
+  };
+
+  const prompt = `For the trading session on ${date}, identify the top 10 best-performing stocks in the ${marketDesc[market]} by single-day percentage gain. Use Google Search to find accurate data.
+
+Return ONLY a valid JSON array with no markdown, no explanation, no preamble. Each object must have:
+- ticker: string
+- name: string (company name, max 28 chars)
+- open: number (opening price)
+- close: number (closing price)
+- change_pct: number (percentage gain, e.g. 8.34 for +8.34%)
+- volume: string (e.g. "2.1M")
+- sector: string
+- data_note: string (empty if clean; note uncertainty or estimation)
+
+Sort by change_pct descending. Return ONLY the raw JSON array.`;
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    tools: [{ google_search: {} }],
+    generationConfig: { temperature: 0.1, maxOutputTokens: 2000 }
+  };
+
+  const res = await callGemini(apiKey, body);
+  return parseJsonResponse(res);
+}
+
+// ── GEMINI API CALL: ALL FOLLOW-ON IN ONE REQUEST ─────────────────────────
+async function fetchAllFollowon(apiKey, stocks, date, market) {
+  const tickerList = stocks.map((s, i) => `${i+1}. ${s.ticker} (${s.name}, closed at ${s.close} on ${date})`).join('\n');
+
+  const nextDate = getNextTradingDay(date);
+
+  const prompt = `I have the following stocks that were top performers on ${date}:
+
+${tickerList}
+
+Using Google Search, retrieve the daily closing prices for each stock for the 10 trading days starting from ${nextDate}.
+
+Return ONLY a valid JSON object with no markdown, no preamble. The object must have one key per ticker. Each value is an array of up to 10 objects:
+- day: number (1-10)
+- date: string (YYYY-MM-DD)
+- close: number
+- change_pct: number (cumulative % change vs the base close on ${date})
+- daily_pct: number (% change vs prior day)
+- note: string (empty if reliable; note if estimated or unavailable)
+
+If a stock has no data for a day, omit that day from the array.
+Return ONLY the raw JSON object.`;
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    tools: [{ google_search: {} }],
+    generationConfig: { temperature: 0.1, maxOutputTokens: 4000 }
+  };
+
+  const res = await callGemini(apiKey, body);
+  const raw = res.replace(/```json|```/g, '').trim();
+  return JSON.parse(raw);
+}
+
+// ── GEMINI HTTP CALL ───────────────────────────────────────────────────────
+async function callGemini(apiKey, body) {
+  const url = `${GEMINI_ENDPOINT}?key=${encodeURIComponent(apiKey)}`;
+  const res  = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = err?.error?.message || `Gemini API error ${res.status}`;
+    throw new Error(msg);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('No content returned from Gemini.');
+  return text;
+}
+
+function parseJsonResponse(raw) {
+  let clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if (!Array.isArray(parsed)) throw new Error('Unexpected response format.');
+  return parsed;
+}
+
+function getNextTradingDay(dateStr) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + 1);
+  if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+  if (d.getDay() === 6) d.setDate(d.getDate() + 2);
+  return d.toISOString().slice(0, 10);
+}
+
+// ── RENDER TOP 10 ──────────────────────────────────────────────────────────
+function renderTop10(stocks, date) {
+  const area = document.getElementById('resultsArea');
+  if (!stocks || stocks.length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-label">No data</div><p>No results found for this market and date.<br/>Try a different date or check markets were open.</p></div>`;
+    return;
+  }
+
+  let html = `<div class="section-header">
+    <span class="section-title">Top 10 movers · ${marketLabels[currentMarket]}</span>
+    <span class="section-badge">${date}</span>
+  </div>
+  <table class="top10-table">
+    <thead><tr>
+      <th>#</th><th>Ticker / Company</th>
+      <th class="r">Open</th><th class="r">Close</th>
+      <th class="r">Change</th><th class="r">Volume</th><th>Sector</th>
+    </tr></thead><tbody>`;
+
+  stocks.forEach((s, i) => {
+    const isGain = s.change_pct >= 0;
+    const sign   = isGain ? '+' : '';
+    const cls    = isGain ? 'gain' : 'loss';
+    html += `<tr class="${i === 0 ? 'rank1' : ''}">
+      <td class="rank-num">${i+1}</td>
+      <td>
+        <span class="ticker">${esc(s.ticker)}</span>
+        <span class="co-name">${esc(s.name)}</span>
+        ${s.data_note ? `<span class="note-warn">⚠ ${esc(s.data_note)}</span>` : ''}
+      </td>
+      <td class="r">${fmtP(s.open)}</td>
+      <td class="r">${fmtP(s.close)}</td>
+      <td class="r ${cls}">${sign}${(+s.change_pct).toFixed(2)}%</td>
+      <td class="r" style="color:var(--muted)">${esc(s.volume||'—')}</td>
+      <td style="font-size:10px;color:var(--muted)">${esc(s.sector||'—')}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  area.innerHTML = html;
+}
+
+// ── RENDER ALL FOLLOW-ON ───────────────────────────────────────────────────
+function renderAllFollowon(data) {
+  const area = document.getElementById('followonArea');
+  if (!data || Object.keys(data).length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-label">No follow-on data</div><p>Could not retrieve follow-on data for this set.</p></div>`;
+    return;
+  }
+
+  let html = `<div class="section-header" style="margin-bottom:16px;">
+    <span class="section-title">10-day follow-on · all stocks</span>
+    <span class="section-badge">${currentDate} +10 trading days</span>
+  </div><div class="followon-section">`;
+
+  currentResults.forEach(stock => {
+    const days = data[stock.ticker] || [];
+    html += `<div class="followon-stock">
+      <div class="followon-stock-header">
+        <span class="followon-ticker">${esc(stock.ticker)}</span>
+        <span class="followon-name">${esc(stock.name)}</span>
+        <span class="followon-base">Base: ${fmtP(stock.close)}</span>
+      </div>
+      <div class="day-grid">`;
+
+    if (days.length === 0) {
+      html += `<span class="day-unavail">No follow-on data available for this stock.</span>`;
+    } else {
+      days.forEach(d => {
+        const isPos  = d.change_pct >= 0;
+        const sign   = isPos ? '+' : '';
+        const color  = isPos ? 'var(--accent)' : 'var(--red)';
+        html += `<div class="day-card ${isPos ? 'pos' : 'neg'}">
+          <div class="dl">D+${d.day}</div>
+          <div class="dp" style="color:${color}">${sign}${(+d.change_pct).toFixed(1)}%</div>
+          <div class="dpr">${fmtP(d.close)}</div>
+          ${d.note ? `<div class="dest">~est</div>` : ''}
+        </div>`;
+      });
+    }
+
+    html += `</div></div>`;
+  });
+
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+// ── USAGE TRACKING ─────────────────────────────────────────────────────────
+function getUsageStore() {
+  try { return JSON.parse(localStorage.getItem('ms_usage') || '{"sessions":[],"daily":{},"monthly":{}}'); }
+  catch { return { sessions: [], daily: {}, monthly: {} }; }
+}
+
+function saveUsageStore(s) {
+  try { localStorage.setItem('ms_usage', JSON.stringify(s)); } catch {}
+}
+
+function estimateSearches(type) {
+  // scout: 2-4 searches, followon: 3-6 searches
+  return type === 'scout' ? 3 : 5;
+}
+
+function logUsage(type, market, queryDate, calls, searches) {
+  const store = getUsageStore();
+  const now   = new Date();
+  const dayKey = now.toISOString().slice(0, 10);
+  const monKey = now.toISOString().slice(0, 7);
+
+  store.sessions.unshift({
+    ts: now.toISOString(),
+    type, market, queryDate, calls, searches
+  });
+  if (store.sessions.length > 100) store.sessions = store.sessions.slice(0, 100);
+
+  store.daily[dayKey] = store.daily[dayKey] || { calls: 0, searches: 0 };
+  store.daily[dayKey].calls    += calls;
+  store.daily[dayKey].searches += searches;
+
+  store.monthly[monKey] = store.monthly[monKey] || { calls: 0, searches: 0 };
+  store.monthly[monKey].calls    += calls;
+  store.monthly[monKey].searches += searches;
+
+  saveUsageStore(store);
+}
+
+function clearUsage() {
+  if (!confirm('Clear all usage history?')) return;
+  localStorage.removeItem('ms_usage');
+  renderUsage();
+}
+
+function renderUsage() {
+  const store  = getUsageStore();
+  const today  = new Date().toISOString().slice(0, 10);
+  const month  = new Date().toISOString().slice(0, 7);
+  const day    = store.daily[today]   || { calls: 0, searches: 0 };
+  const mon    = store.monthly[month] || { calls: 0, searches: 0 };
+  const total  = store.sessions.length;
+
+  // Cards
+  setText('uCallsToday',  day.calls);
+  setText('uSearchToday', day.searches);
+  setText('uCallsMonth',  mon.calls);
+  setText('uSearchMonth', mon.searches);
+  setText('uSessions',    total);
+  setText('uRemaining',   Math.max(0, DAILY_LIMIT - day.calls).toLocaleString());
+
+  // Bars
+  setBar('uBarDay',         day.calls / DAILY_LIMIT);
+  setBar('uBarSearch',      day.searches / 200);   // rough daily search budget (5000/30 ≈ 167)
+  setBar('uBarMonth',       mon.calls / MONTHLY_CALLS);
+  setBar('uBarSearchMonth', mon.searches / MONTHLY_SEARCH);
+
+  // Colour warning
+  barColor('uBarDay',   day.calls / DAILY_LIMIT);
+  barColor('uBarSearchMonth', mon.searches / MONTHLY_SEARCH);
+
+  // Reset note
+  const reset = new Date(); reset.setDate(reset.getDate() + 1); reset.setHours(0,0,0,0);
+  const hrs = Math.round((reset - new Date()) / 3600000);
+  setText('usageResetNote', `Day resets in ${hrs}h · Month: ${month}`);
+
+  // Log table
+  const tbody = document.getElementById('logBody');
+  const logEmpty = document.getElementById('logEmpty');
+  if (store.sessions.length === 0) {
+    tbody.innerHTML = '';
+    logEmpty.style.display = 'block';
+  } else {
+    logEmpty.style.display = 'none';
+    tbody.innerHTML = store.sessions.map(s => {
+      const dt = new Date(s.ts);
+      const dtStr = dt.toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) + ' ' +
+                    dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      const mLabel = { us_large:'US Large', us_small:'US Small', ngx:'NGX' }[s.market] || s.market;
+      const typeLabel = s.type === 'scout' ? 'Top 10 Scout' : '10-day Follow-on';
+      return `<tr>
+        <td style="color:var(--muted)">${dtStr}</td>
+        <td>${mLabel}</td>
+        <td style="font-family:var(--mono)">${s.queryDate}</td>
+        <td>${typeLabel}</td>
+        <td class="r">${s.calls}</td>
+        <td class="r">${s.searches}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function setBar(id, ratio) {
+  const el = document.getElementById(id);
+  if (el) el.style.width = Math.min(100, ratio * 100).toFixed(1) + '%';
+}
+
+function barColor(id, ratio) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (ratio > 0.85) el.style.background = 'var(--red)';
+  else if (ratio > 0.6) el.style.background = 'var(--amber)';
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────────────────
+function setStatus(type, msg) {
+  const bar = document.getElementById('statusBar');
+  bar.className = 'status-bar' + (type !== 'idle' ? ' ' + type : '');
+  document.getElementById('statusText').textContent = msg;
+}
+
+function showSkeleton() {
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+    html += `<div class="skel-row">
+      <div class="skel" style="width:14px;height:12px"></div>
+      <div class="skel" style="width:70px;height:12px"></div>
+      <div class="skel" style="width:100px;height:12px;margin-left:auto"></div>
+      <div class="skel" style="width:55px;height:12px"></div>
+      <div class="skel" style="width:55px;height:12px"></div>
+    </div>`;
+  }
+  document.getElementById('resultsArea').innerHTML = html;
+}
+
+function showEmpty(reason) {
+  document.getElementById('resultsArea').innerHTML = `<div class="empty-state"><div class="empty-label">No results</div><p>Could not retrieve data. Check your API key and try again.</p></div>`;
+}
+
+function fmtP(v) {
+  if (v == null || isNaN(+v)) return '—';
+  return (+v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── SERVICE WORKER ─────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
