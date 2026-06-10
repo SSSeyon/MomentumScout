@@ -208,7 +208,7 @@
       </svg>
     </div>
     <span class="logo-text">MOMENTUM<span>SCOUT</span></span>
-    <span class="logo-version">v1.4.0</span>
+    <span class="logo-version">v1.5.0</span>
   </div>
   <div class="header-right">
     <button class="nav-btn active" id="navScout"    onclick="showView('scout')">Scout</button>
@@ -243,7 +243,7 @@
       <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:10px;" id="retryHint"></span>
     </div>
     <div class="disclaimer">
-      <strong>Notice</strong> — Results are drawn from Gemini's training data, not live web search. Data for recent dates (post mid-2025) may be estimated — check the ⚠ flags. Always verify before any investment decision.
+      <strong>Notice</strong> — US market results use live Polygon.io end-of-day data (roughly the last 2 years). NGX and older dates fall back to Gemini training data — check the ⚠ flags. The small-cap universe is filtered heuristically and may include non-Russell tickers. Always verify before any investment decision.
     </div>
     <div class="ngx-notice" id="ngxNotice">NGX data availability varies. Results may be incomplete for older dates or less-liquid securities.</div>
     <div id="resultsArea"><div class="empty-state"><div class="empty-label">Awaiting input</div><p>Select a market, pick a date,<br/>then run the scout to see the top 10 movers.</p></div></div>
@@ -260,10 +260,11 @@
       <span class="section-badge" id="usageResetNote"></span>
     </div>
     <div class="usage-grid">
-      <div class="usage-card"><div class="uc-label">Calls Today</div><div class="uc-val" id="uCallsToday">0</div><div class="uc-sub">of 1,500 daily limit</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarDay" style="width:0%;background:var(--accent)"></div></div></div>
-      <div class="usage-card"><div class="uc-label">Calls This Month</div><div class="uc-val" id="uCallsMonth">0</div><div class="uc-sub">of ~45,000 monthly est.</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarMonth" style="width:0%;background:var(--amber)"></div></div></div>
+      <div class="usage-card"><div class="uc-label">Gemini Calls Today</div><div class="uc-val" id="uCallsToday">0</div><div class="uc-sub">of 1,500 daily limit</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarDay" style="width:0%;background:var(--accent)"></div></div></div>
+      <div class="usage-card"><div class="uc-label">Polygon Calls Today</div><div class="uc-val" id="uPolyToday">0</div><div class="uc-sub">rate cap: 5 calls/min</div></div>
+      <div class="usage-card"><div class="uc-label">Gemini Calls This Month</div><div class="uc-val" id="uCallsMonth">0</div><div class="uc-sub">of ~45,000 monthly est.</div><div class="uc-bar-wrap"><div class="uc-bar" id="uBarMonth" style="width:0%;background:var(--amber)"></div></div></div>
       <div class="usage-card"><div class="uc-label">Sessions Total</div><div class="uc-val" id="uSessions">0</div><div class="uc-sub">scout + follow-on runs</div></div>
-      <div class="usage-card"><div class="uc-label">Remaining Today</div><div class="uc-val" id="uRemaining">1,500</div><div class="uc-sub">API calls available</div></div>
+      <div class="usage-card"><div class="uc-label">Gemini Remaining Today</div><div class="uc-val" id="uRemaining">1,500</div><div class="uc-sub">API calls available</div></div>
     </div>
     <div class="usage-log">
       <div class="usage-log-header"><span class="usage-log-title">Session Log</span><button class="clear-btn" onclick="clearUsage()">Clear log</button></div>
@@ -278,7 +279,7 @@
   <!-- SETTINGS VIEW -->
   <div id="settingsPanel" style="display:none;">
     <div class="section-header" style="margin-bottom:24px;">
-      <span class="section-title">Settings</span><span class="section-badge">v1.4.0</span>
+      <span class="section-title">Settings</span><span class="section-badge">v1.5.0</span>
     </div>
 
     <div class="settings-section">
@@ -291,6 +292,16 @@
             <button class="save-key-btn" onclick="saveApiKey()">Save key</button>
           </div>
           <div class="key-status none" id="keyStatus"><span class="ks-dot"></span><span class="ks-text" id="keyStatusText">No key saved</span></div>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Polygon.io API Key</div><div class="settings-desc">Free key from polygon.io — live US end-of-day data for roughly the last 2 years. Saved in this browser only.</div></div>
+        <div class="settings-right" style="flex-direction:column;align-items:flex-end;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="password" class="settings-key-input" id="polyKeyInput" placeholder="Paste your Polygon.io API key…" autocomplete="off" />
+            <button class="save-key-btn" onclick="savePolyKey()">Save key</button>
+          </div>
+          <div class="key-status none" id="polyKeyStatus"><span class="ks-dot"></span><span class="ks-text" id="polyKeyStatusText">No key saved</span></div>
         </div>
       </div>
     </div>
@@ -342,8 +353,8 @@
         <div class="settings-right"><button class="danger-btn" onclick="hardRefresh()">Hard Refresh</button></div>
       </div>
       <div class="settings-row">
-        <div><div class="settings-label">Clear Saved Key</div><div class="settings-desc">Remove the stored Gemini API key from this browser.</div></div>
-        <div class="settings-right"><button class="danger-btn" onclick="clearApiKey()">Clear Key</button></div>
+        <div><div class="settings-label">Clear Saved Keys</div><div class="settings-desc">Remove the stored Gemini and Polygon API keys from this browser.</div></div>
+        <div class="settings-right"><button class="danger-btn" onclick="clearApiKey()">Clear Keys</button></div>
       </div>
     </div>
 
@@ -351,8 +362,8 @@
       <div class="settings-section-title">About</div>
       <div class="settings-row">
         <div>
-          <div class="settings-label">Momentum Scout <span style="color:var(--muted);font-size:11px;">v1.4.0</span></div>
-          <div class="settings-desc">Powered by Gemini 2.5 Flash. Live Google Search grounding disabled (browser CORS limitation) — results use Gemini training data. Dates before mid-2025 are most reliable.<br/>Free tier: 1,500 API calls/day.</div>
+          <div class="settings-label">Momentum Scout <span style="color:var(--muted);font-size:11px;">v1.5.0</span></div>
+          <div class="settings-desc">US markets use live end-of-day data from Polygon.io (free tier: ~2 years of history, 5 calls/min). NGX and older dates fall back to Gemini 2.5 Flash training data (free tier: 1,500 calls/day).<br/>S&amp;P 500 membership is loaded from a public constituent list and cached for 7 days.</div>
         </div>
       </div>
     </div>
@@ -362,18 +373,24 @@
 <div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
 
 <script>
-const APP_VERSION  = 'v1.4.0';
+const APP_VERSION  = 'v1.5.0';
 const GEMINI_MODEL = 'gemini-2.5-flash';
 const GEMINI_URL   = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const DAILY_LIMIT  = 1500;
 const MONTHLY_CALLS = 45000;
 const MAX_RETRIES  = 2;
+const POLY_BASE    = 'https://api.polygon.io';
+const POLY_HISTORY_DAYS = 720; // Polygon free tier: roughly 2 years of daily history
+const SP500_URLS = [
+  'https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv',
+  'https://raw.githubusercontent.com/datasets/s-and-p-500-companies/master/data/constituents.csv'
+];
 
-// Per-tab state: results, follow-on data, date, status
+// Per-tab state: results, follow-on data, date, data source
 const tabState = {
-  us_large: { results:null, followon:null, date:null },
-  us_small: { results:null, followon:null, date:null },
-  ngx:      { results:null, followon:null, date:null }
+  us_large: { results:null, followon:null, date:null, src:null },
+  us_small: { results:null, followon:null, date:null, src:null },
+  ngx:      { results:null, followon:null, date:null, src:null }
 };
 
 let currentMarket = 'us_large';
@@ -389,6 +406,7 @@ const marketLabels = {
 (function init() {
   applyTheme(localStorage.getItem('ms_theme') || 'dark');
   refreshKeyStatus();
+  refreshPolyStatus();
   refreshFbStatus();
   const d = new Date();
   d.setDate(d.getDate() - 1);
@@ -422,14 +440,32 @@ function saveApiKey() {
   refreshKeyStatus(); showToast('API key saved ✓');
 }
 function clearApiKey() {
-  if (!confirm('Remove the saved API key?')) return;
-  localStorage.removeItem('ms_apikey'); refreshKeyStatus(); showToast('Key removed.');
+  if (!confirm('Remove the saved Gemini and Polygon API keys?')) return;
+  localStorage.removeItem('ms_apikey'); localStorage.removeItem('ms_polykey');
+  refreshKeyStatus(); refreshPolyStatus(); showToast('Keys removed.');
 }
 function refreshKeyStatus() {
   const k = getSavedKey(), s = document.getElementById('keyStatus'), t = document.getElementById('keyStatusText'), i = document.getElementById('settingsKeyInput');
   if (!s) return;
   if (k) { s.className='key-status saved'; t.textContent='Key saved · '+k.slice(0,8)+'••••••••'; if(i) i.placeholder='Enter new key to replace…'; }
   else   { s.className='key-status none';  t.textContent='No key saved'; if(i) i.placeholder='Paste your Gemini API key…'; }
+}
+
+// ── POLYGON KEY ────────────────────────────────────────────────────────────
+function getPolyKey() { return localStorage.getItem('ms_polykey') || ''; }
+function savePolyKey() {
+  const v = document.getElementById('polyKeyInput').value.trim();
+  if (!v) { showToast('Enter a key first.', true); return; }
+  if (v.length < 10) { showToast('Key looks too short.', true); return; }
+  localStorage.setItem('ms_polykey', v);
+  document.getElementById('polyKeyInput').value = '';
+  refreshPolyStatus(); showToast('Polygon key saved ✓');
+}
+function refreshPolyStatus() {
+  const k = getPolyKey(), s = document.getElementById('polyKeyStatus'), t = document.getElementById('polyKeyStatusText'), i = document.getElementById('polyKeyInput');
+  if (!s) return;
+  if (k) { s.className='key-status saved'; t.textContent='Key saved · '+k.slice(0,6)+'••••••'; if(i) i.placeholder='Enter new key to replace…'; }
+  else   { s.className='key-status none';  t.textContent='No key saved'; if(i) i.placeholder='Paste your Polygon.io API key…'; }
 }
 
 // ── FIREBASE ───────────────────────────────────────────────────────────────
@@ -467,7 +503,7 @@ async function saveToFirebase() {
   try {
     const payload = {};
     for (const [mkt, state] of Object.entries(tabState)) {
-      if (state.results) payload[mkt] = { results: state.results, followon: state.followon, date: state.date, ts: Date.now() };
+      if (state.results) payload[mkt] = { results: state.results, followon: state.followon, date: state.date, src: state.src, ts: Date.now() };
     }
     await fetch(`${url}/ms_data.json`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
     showSyncStatus('Synced ✓', true);
@@ -488,6 +524,7 @@ async function loadFromFirebase() {
         tabState[mkt].results  = state.results;
         tabState[mkt].followon = state.followon || null;
         tabState[mkt].date     = state.date || null;
+        tabState[mkt].src      = state.src || null;
         markTabHasData(mkt, true);
         loaded++;
       }
@@ -516,7 +553,7 @@ function showView(v) {
     if (b) b.classList.toggle('active', v===id);
   });
   if (v==='usage')    renderUsage();
-  if (v==='settings') { refreshKeyStatus(); refreshFbStatus(); }
+  if (v==='settings') { refreshKeyStatus(); refreshPolyStatus(); refreshFbStatus(); }
 }
 
 // ── MARKET TABS ────────────────────────────────────────────────────────────
@@ -541,7 +578,8 @@ function renderCurrentTab() {
   const state = tabState[currentMarket];
   if (state.results) {
     renderTop10(state.results, state.date);
-    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${state.date}`);
+    const srcLabel = state.src === 'polygon' ? ' · Polygon' : (state.src === 'gemini' ? ' · Gemini' : '');
+    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${state.date}${srcLabel}`);
     if (state.results.length > 0) {
       document.getElementById('followonBtnRow').style.display = 'block';
       const btn = document.getElementById('followonBtn');
@@ -560,9 +598,16 @@ function renderCurrentTab() {
 document.getElementById('runBtn').addEventListener('click', runScout);
 
 async function runScout() {
-  const apiKey = getSavedKey(), dateVal = document.getElementById('dateInput').value;
-  if (!apiKey)  { setStatus('error','No API key — add one in Settings.'); return; }
+  const gKey = getSavedKey(), pKey = getPolyKey(), dateVal = document.getElementById('dateInput').value;
   if (!dateVal) { setStatus('error','Please select a date.'); return; }
+  const polyEligible = currentMarket !== 'ngx' && withinPolyRange(dateVal);
+  let src;
+  if (polyEligible && pKey) src = 'polygon';
+  else if (gKey) src = 'gemini';
+  else {
+    setStatus('error', polyEligible ? 'No API key — add a Polygon key (recommended) or Gemini key in Settings.' : 'No Gemini API key — add one in Settings.');
+    return;
+  }
   lastAction = { type:'scout', market:currentMarket, date:dateVal };
   const btn = document.getElementById('runBtn');
   btn.disabled = true;
@@ -571,18 +616,27 @@ async function runScout() {
   document.getElementById('followonArea').innerHTML = '';
   document.getElementById('errorDetail').style.display = 'none';
   document.getElementById('retryRow').style.display = 'none';
-  setStatus('loading', `Scouting ${marketLabels[currentMarket]} for ${dateVal}…`);
+  setStatus('loading', `Scouting ${marketLabels[currentMarket]} for ${dateVal} via ${src==='polygon'?'Polygon live data':'Gemini'}…`);
   showSkeleton();
 
   try {
-    const stocks = await withRetry(() => fetchTop10(apiKey, currentMarket, dateVal));
+    let stocks, calls;
+    if (src === 'polygon') {
+      const before = polyCallCount;
+      stocks = await fetchTop10Polygon(currentMarket, dateVal);
+      calls = polyCallCount - before;
+    } else {
+      stocks = await withRetry(() => fetchTop10(gKey, currentMarket, dateVal));
+      calls = 1;
+    }
     tabState[currentMarket].results = stocks;
     tabState[currentMarket].date    = dateVal;
+    tabState[currentMarket].src     = src;
     markTabHasData(currentMarket, true);
     renderTop10(stocks, dateVal);
-    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${dateVal}`);
+    setStatus('ok', `Top 10 loaded · ${marketLabels[currentMarket]} · ${dateVal} · ${src==='polygon'?'Polygon':'Gemini'}`);
     if (stocks.length > 0) document.getElementById('followonBtnRow').style.display = 'block';
-    logUsage('scout', currentMarket, dateVal, 1);
+    logUsage('scout', currentMarket, dateVal, calls, src);
     saveToFirebase();
   } catch(err) {
     setStatus('error','Scout failed — see details below.');
@@ -594,21 +648,31 @@ async function runScout() {
 
 // ── LOAD ALL FOLLOW-ON ─────────────────────────────────────────────────────
 async function loadAllFollowon() {
-  const apiKey = getSavedKey(), state = tabState[currentMarket];
-  if (!apiKey || !state.results?.length) return;
+  const state = tabState[currentMarket];
+  if (!state.results?.length) return;
+  const src = (state.src === 'polygon' && getPolyKey()) ? 'polygon' : 'gemini';
+  if (src === 'gemini' && !getSavedKey()) { setStatus('error','No Gemini API key — add one in Settings.'); return; }
   lastAction = { type:'followon', market:currentMarket, date:state.date };
   const btn = document.getElementById('followonBtn');
   btn.disabled = true; btn.textContent = 'Loading follow-on data…';
-  setStatus('loading', `Fetching 10-day follow-on for all ${state.results.length} stocks…`);
+  setStatus('loading', `Fetching 10-day follow-on for all ${state.results.length} stocks via ${src==='polygon'?'Polygon':'Gemini'}…`);
   document.getElementById('errorDetail').style.display = 'none';
   document.getElementById('retryRow').style.display = 'none';
 
   try {
-    const data = await withRetry(() => fetchAllFollowon(apiKey, state.results, state.date));
+    let data, calls;
+    if (src === 'polygon') {
+      const before = polyCallCount;
+      data = await fetchFollowonPolygon(state.results, state.date);
+      calls = polyCallCount - before;
+    } else {
+      data = await withRetry(() => fetchAllFollowon(getSavedKey(), state.results, state.date));
+      calls = 1;
+    }
     tabState[currentMarket].followon = data;
     renderAllFollowon(data, state.results);
-    setStatus('ok', `Follow-on loaded · ${state.date}`);
-    logUsage('followon', currentMarket, state.date, 1);
+    setStatus('ok', `Follow-on loaded · ${state.date} · ${src==='polygon'?'Polygon':'Gemini'}`);
+    logUsage('followon', currentMarket, state.date, calls, src);
     btn.textContent = 'Follow-on loaded';
     saveToFirebase();
   } catch(err) {
@@ -642,6 +706,189 @@ async function withRetry(fn, retries = MAX_RETRIES) {
       }
     }
   }
+}
+
+// ── POLYGON DATA LAYER ────────────────────────────────────────────────────
+let polyCallCount = 0;
+const polyCallTimes = []; // rolling window for the 5 calls/min free-tier cap
+
+function withinPolyRange(ds) {
+  const d = new Date(ds + 'T00:00:00Z'), now = new Date();
+  if (isNaN(d) || d > now) return false;
+  return (now - d) / 86400000 <= POLY_HISTORY_DAYS;
+}
+
+async function polyFetch(path, statusMsg) {
+  const key = getPolyKey();
+  if (!key) throw new Error('No Polygon API key saved.');
+  // Throttle: max 5 calls per rolling 62s window
+  while (true) {
+    const now = Date.now();
+    while (polyCallTimes.length && now - polyCallTimes[0] > 62000) polyCallTimes.shift();
+    if (polyCallTimes.length < 5) break;
+    const waitMs = 62000 - (now - polyCallTimes[0]) + 300;
+    if (statusMsg) setStatus('loading', `${statusMsg} — rate limit, waiting ~${Math.ceil(waitMs/1000)}s…`);
+    await new Promise(r => setTimeout(r, Math.min(waitMs, 5000)));
+  }
+  polyCallTimes.push(Date.now());
+  polyCallCount++;
+  const sep = path.includes('?') ? '&' : '?';
+  const url = `${POLY_BASE}${path}${sep}apiKey=${encodeURIComponent(key)}`;
+  let res;
+  try { res = await fetch(url); }
+  catch(e) { throw new Error('Network error reaching Polygon.\n' + e.message); }
+  if (res.status === 429) {
+    if (statusMsg) setStatus('loading', `${statusMsg} — Polygon rate limit hit, waiting 20s…`);
+    await new Promise(r => setTimeout(r, 20000));
+    polyCallTimes.push(Date.now());
+    polyCallCount++;
+    try { res = await fetch(url); }
+    catch(e) { throw new Error('Network error reaching Polygon.\n' + e.message); }
+  }
+  if (!res.ok) {
+    let b = {}; try { b = await res.json(); } catch {}
+    const m = b?.error || b?.message || `HTTP ${res.status}`;
+    if (res.status === 401 || res.status === 403) throw new Error(`Polygon auth error (${res.status}): ${m}\nCheck your Polygon API key in Settings.`);
+    if (res.status === 429) throw new Error(`Polygon rate limit (429): ${m}\nWait a minute and retry.`);
+    throw new Error(`Polygon API error (${res.status}): ${m}`);
+  }
+  return res.json();
+}
+
+async function polyGrouped(date, statusMsg) {
+  const j = await polyFetch(`/v2/aggs/grouped/locale/us/market/stocks/${date}?adjusted=true`, statusMsg);
+  return j?.results || [];
+}
+
+function csvSplit(line) {
+  const out = []; let cur = '', q = false;
+  for (const ch of line) {
+    if (ch === '"') q = !q;
+    else if (ch === ',' && !q) { out.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+let sp500Cache = null;
+async function getSp500() {
+  if (sp500Cache) return sp500Cache;
+  try {
+    const stored = JSON.parse(localStorage.getItem('ms_sp500') || 'null');
+    if (stored && stored.map && Date.now() - stored.ts < 7 * 86400000) { sp500Cache = stored.map; return sp500Cache; }
+  } catch {}
+  let text = null;
+  for (const u of SP500_URLS) {
+    try { const r = await fetch(u); if (r.ok) { text = await r.text(); break; } } catch {}
+  }
+  if (!text) throw new Error('Could not load the S&P 500 constituent list.\nCheck your connection and retry.');
+  const map = {};
+  text.split(/\r?\n/).slice(1).forEach(line => {
+    if (!line.trim()) return;
+    const cols = csvSplit(line);
+    const sym = (cols[0] || '').trim();
+    if (!sym) return;
+    map[sym] = { name: (cols[1] || '').trim(), sector: (cols[2] || '').trim() };
+  });
+  if (Object.keys(map).length < 400) throw new Error('S&P 500 constituent list looks incomplete — retry later.');
+  sp500Cache = map;
+  try { localStorage.setItem('ms_sp500', JSON.stringify({ ts: Date.now(), map })); } catch {}
+  return map;
+}
+
+function prevCalendarDay(ds) {
+  const d = new Date(ds + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+async function fetchTop10Polygon(market, date) {
+  const dayBars = await polyGrouped(date, 'Fetching market data');
+  if (!dayBars.length) throw new Error(`Polygon returned no trading data for ${date}.\nWas this a weekend or market holiday?`);
+
+  // Previous trading session closes, for accurate daily % change
+  const prevMap = {};
+  let pd = date;
+  for (let i = 0; i < 5; i++) {
+    pd = prevCalendarDay(pd);
+    const wd = new Date(pd + 'T00:00:00Z').getUTCDay();
+    if (wd === 0 || wd === 6) continue;
+    const bars = await polyGrouped(pd, 'Fetching previous session');
+    if (bars.length) { bars.forEach(b => { prevMap[b.T] = b.c; }); break; }
+  }
+
+  let meta = null, universeFilter;
+  if (market === 'us_large') {
+    meta = await getSp500();
+    universeFilter = b => meta[b.T];
+  } else {
+    let sp = {};
+    try { sp = await getSp500(); } catch {}
+    // Heuristic small-cap universe: not S&P 500, plain ticker, liquid, not sub-$1
+    universeFilter = b => !sp[b.T] && /^[A-Z]{1,5}$/.test(b.T) && b.c >= 1 && b.v >= 200000;
+  }
+
+  const rows = dayBars
+    .filter(b => universeFilter(b) && b.o > 0 && b.c > 0)
+    .map(b => {
+      const pc = prevMap[b.T];
+      const base = pc || b.o;
+      const info = meta && meta[b.T];
+      return {
+        ticker: b.T,
+        name: info ? info.name.slice(0, 28) : '',
+        open: b.o,
+        close: b.c,
+        change_pct: +(((b.c - base) / base) * 100).toFixed(2),
+        volume: fmtVol(b.v),
+        sector: info ? info.sector : '',
+        data_note: pc ? '' : 'vs open — no prior close found'
+      };
+    })
+    .sort((a, b) => b.change_pct - a.change_pct)
+    .slice(0, 10);
+
+  if (!rows.length) throw new Error('No stocks matched the universe filter for this date.');
+  return rows;
+}
+
+async function fetchFollowonPolygon(stocks, date) {
+  const from = getNextTradingDay(date);
+  const toD = new Date(date + 'T00:00:00Z');
+  toD.setUTCDate(toD.getUTCDate() + 21);
+  const to = toD.toISOString().slice(0, 10);
+  const out = {};
+  for (let i = 0; i < stocks.length; i++) {
+    const s = stocks[i];
+    const msg = `Follow-on ${i + 1}/${stocks.length} · ${s.ticker}`;
+    setStatus('loading', `${msg} (Polygon, rate-limited — this can take ~2 min)…`);
+    const j = await polyFetch(`/v2/aggs/ticker/${encodeURIComponent(s.ticker)}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=15`, msg);
+    const bars = (j?.results || []).slice(0, 10);
+    let prev = s.close;
+    out[s.ticker] = bars.map((b, idx) => {
+      const row = {
+        day: idx + 1,
+        date: new Date(b.t).toISOString().slice(0, 10),
+        close: b.c,
+        change_pct: +(((b.c - s.close) / s.close) * 100).toFixed(2),
+        daily_pct: +(((b.c - prev) / prev) * 100).toFixed(2),
+        note: ''
+      };
+      prev = b.c;
+      return row;
+    });
+  }
+  return out;
+}
+
+function fmtVol(v) {
+  if (v == null || isNaN(+v)) return '—';
+  v = +v;
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+  return String(Math.round(v));
 }
 
 // ── GEMINI: TOP 10 ────────────────────────────────────────────────────────
@@ -784,13 +1031,21 @@ function renderAllFollowon(data, stocks) {
 function getUsageStore() { try { return JSON.parse(localStorage.getItem('ms_usage')||'{"sessions":[],"daily":{},"monthly":{}}'); } catch { return {sessions:[],daily:{},monthly:{}}; } }
 function saveUsageStore(s) { try { localStorage.setItem('ms_usage',JSON.stringify(s)); } catch {} }
 
-function logUsage(type, market, queryDate, calls) {
+function logUsage(type, market, queryDate, calls, src) {
+  src = src || 'gemini';
   const store = getUsageStore(), now = new Date();
   const dk = now.toISOString().slice(0,10), mk = now.toISOString().slice(0,7);
-  store.sessions.unshift({ts:now.toISOString(),type,market,queryDate,calls});
+  store.sessions.unshift({ts:now.toISOString(),type,market,queryDate,calls,src});
   if (store.sessions.length>100) store.sessions=store.sessions.slice(0,100);
-  store.daily[dk]   = store.daily[dk]   || {calls:0}; store.daily[dk].calls   += calls;
-  store.monthly[mk] = store.monthly[mk] || {calls:0}; store.monthly[mk].calls += calls;
+  store.daily[dk]   = store.daily[dk]   || {calls:0}; 
+  store.monthly[mk] = store.monthly[mk] || {calls:0};
+  if (src === 'polygon') {
+    store.daily[dk].pcalls   = (store.daily[dk].pcalls   || 0) + calls;
+    store.monthly[mk].pcalls = (store.monthly[mk].pcalls || 0) + calls;
+  } else {
+    store.daily[dk].calls   += calls;
+    store.monthly[mk].calls += calls;
+  }
   saveUsageStore(store);
 }
 function clearUsage() { if(!confirm('Clear all usage history?')) return; localStorage.removeItem('ms_usage'); renderUsage(); }
@@ -799,6 +1054,7 @@ function renderUsage() {
   const store = getUsageStore(), today = new Date().toISOString().slice(0,10), month = new Date().toISOString().slice(0,7);
   const day = store.daily[today]||{calls:0}, mon = store.monthly[month]||{calls:0};
   setText('uCallsToday',day.calls); setText('uCallsMonth',mon.calls);
+  setText('uPolyToday',day.pcalls||0);
   setText('uSessions',store.sessions.length); setText('uRemaining',Math.max(0,DAILY_LIMIT-day.calls).toLocaleString());
   setBar('uBarDay',day.calls/DAILY_LIMIT,'accent'); setBar('uBarMonth',mon.calls/MONTHLY_CALLS,'amber');
   warnBar('uBarDay',day.calls/DAILY_LIMIT);
@@ -810,7 +1066,7 @@ function renderUsage() {
   tbody.innerHTML=store.sessions.map(s=>{
     const dt=new Date(s.ts), ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     const ml={us_large:'US Large',us_small:'US Small',ngx:'NGX'}[s.market]||s.market;
-    return `<tr><td style="color:var(--muted)">${ds}</td><td>${ml}</td><td style="font-family:var(--mono)">${s.queryDate}</td><td>${s.type==='scout'?'Top 10':'Follow-on'}</td><td class="r">${s.calls}</td></tr>`;
+    return `<tr><td style="color:var(--muted)">${ds}</td><td>${ml}</td><td style="font-family:var(--mono)">${s.queryDate}</td><td>${s.type==='scout'?'Top 10':'Follow-on'}${s.src==='polygon'?' · PGN':''}</td><td class="r">${s.calls}</td></tr>`;
   }).join('');
 }
 
